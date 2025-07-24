@@ -1,0 +1,929 @@
+[
+  {
+    "objectID": 2719621,
+    "title": "Anima Playground vs. Figma Make - Choosing the Right Vibe-Coding Tool",
+    "snippet": "Converting a design into code used to be a lengthy process with lots of back and forth between design...",
+    "url": "https://dev.to/andrewbaisden/anima-playground-vs-figma-make-choosing-the-right-vibe-coding-tool-3dhb",
+    "tags": [
+      "webdev",
+      "programming",
+      "ai",
+      "react"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2718650,
+    "title": "5 Essential Frontend Tools I Learned At My Job",
+    "snippet": "TL;DR   When I first started my job, I thought I knew most of the things that are required...",
+    "url": "https://dev.to/surajondev/5-essential-frontend-tools-i-learned-at-job-127h",
+    "tags": [
+      "webdev",
+      "frontend",
+      "react",
+      "beginners"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720476,
+    "title": "[Boost]",
+    "snippet": "How I Built a Multiplayer Gaming App...",
+    "url": "https://dev.to/arshadayvid/-2a9i",
+    "tags": [
+      "nextjs",
+      "react",
+      "javascript",
+      "programming"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2710521,
+    "title": "How I Built a Multiplayer Gaming App with Next.js and Firebase",
+    "snippet": "Online multiplayer games bring people together to compete, collaborate, and connect in real-time. In...",
+    "url": "https://dev.to/getstreamhq/how-i-built-a-multiplayer-gaming-app-with-nextjs-and-firebase-2kif",
+    "tags": [
+      "nextjs",
+      "react",
+      "javascript",
+      "programming"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720230,
+    "title": "Flickster Movies Blog",
+    "snippet": "Liquid syntax error: Variable '{{% raw %}' was not properly terminated with regexp: /\\}\\}/",
+    "url": "https://dev.to/stercy_mutuku_98161076e66/flickster-movies-blog-4gl7",
+    "tags": [
+      "webdev",
+      "javascript",
+      "react",
+      "html"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719673,
+    "title": "🚀 Say Goodbye to the Hassle – Add Signatures or Stamps to Images and Documents in Just One Click!",
+    "snippet": "There are many times when we need to add a seal or signature to an image or document — ✍️ But doing...",
+    "url": "https://dev.to/swapnil-ahmmed-shishir/say-goodbye-to-the-hassle-add-signatures-or-stamps-to-images-and-documents-in-just-one-click-2gka",
+    "tags": [
+      "webdev",
+      "programming",
+      "javascript",
+      "react"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719431,
+    "title": "AWS Amplify",
+    "snippet": "I'm using AWS Amplify to make a website. When adding a Gallery schema I get an error when adding url...",
+    "url": "https://dev.to/ulferik/aws-amplify-13lo",
+    "tags": [
+      "webdev",
+      "programming",
+      "react",
+      "database"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719297,
+    "title": "Laravel - React Forecast App",
+    "snippet": "Github link     Project Summary  A lightweight weather forecast application built with a React +...",
+    "url": "https://dev.to/aurelien404/laravel-react-forecast-app-1e85",
+    "tags": [
+      "webdev",
+      "react",
+      "laravel",
+      "api"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719239,
+    "title": "React Auth with LocalStorage: Simplified",
+    "snippet": "Authentication is one of the most intimidating topics for beginners in React, especially when they...",
+    "url": "https://dev.to/blessing_njoku/react-auth-with-localstorage-simplified-h7m",
+    "tags": [
+      "react",
+      "webdev",
+      "programming",
+      "beginners"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719167,
+    "title": "Introducing Planby PRO: The Ultimate Scheduling Solution for Developer",
+    "snippet": "In today’s fast-paced world, businesses need powerful tools to manage complex schedules, timelines,...",
+    "url": "https://dev.to/kozerkarol/introducing-planby-pro-the-ultimate-scheduling-solution-for-developer-9a2",
+    "tags": [
+      "webdev",
+      "programming",
+      "react",
+      "reactnative"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719542,
+    "title": "🚀I Built an AI-Powered Interview Web App (With Feedback & Transcription)",
+    "snippet": "Hey devs! 👋 I just launched an AI-powered interview web app that gives real-time feedback on your...",
+    "url": "https://dev.to/suraj0007/i-built-an-ai-powered-interview-web-app-with-feedback-transcription-2ec3",
+    "tags": [
+      "webdev",
+      "ai",
+      "nextjs",
+      "react"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2717647,
+    "title": "🚀 Seamless Agent Switching in Robots-AI – No More Restarting the Chat!",
+    "snippet": "🚀 Seamless Agent Switching in Robots-AI – No More Restarting the Chat!   Hey devs! 👋  I’ve...",
+    "url": "https://dev.to/wissam_metawee_c320c2e1d8/seamless-agent-switching-in-robots-ai-no-more-restarting-the-chat-2lfe",
+    "tags": [
+      "ai",
+      "opensource",
+      "react",
+      "webdev"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2717542,
+    "title": "Day 2 of My React Journey: Playing with React.createElement() , Evaluated Expression and Errors",
+    "snippet": "Today was all about understanding how React really builds UI under the hood — going beyond the usual...",
+    "url": "https://dev.to/usman_butt_dev/day-2-of-my-react-journey-playing-with-reactcreateelement-evaluated-expression-and-errors-1p7g",
+    "tags": [
+      "webdev",
+      "react",
+      "frontend",
+      "programming"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2718306,
+    "title": "Building Dynamic Table Headers in React + ExcelJS",
+    "snippet": "Building Dynamic Table Headers in React + ExcelJS   This article is a follow-up to my...",
+    "url": "https://dev.to/ramadhan002/building-dynamic-table-headers-in-react-exceljs-2enk",
+    "tags": [
+      "react",
+      "exceljs",
+      "frontend"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2717189,
+    "title": "⚛️ React 101: Build Smarter Components, Not Bigger Ones",
+    "snippet": "Hey community! 👋 If you’ve ever ended up with a massive React component that does everything — API...",
+    "url": "https://dev.to/manukumar07/react-101-build-smarter-components-not-bigger-ones-5g98",
+    "tags": [
+      "webdev",
+      "react",
+      "frontend",
+      "programming"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2717589,
+    "title": "React-Chat-AI-Widget: Build AI-Powered, Role-Based Chatbots That Recommend Products",
+    "snippet": "smart, personalized AI chats in minutes! From friendly support agents to strict compliance bots,...",
+    "url": "https://dev.to/jorgais-ernesto/react-chat-ai-widget-build-ai-powered-role-based-chatbots-that-recommend-products-18oj",
+    "tags": [
+      "react",
+      "javascript",
+      "deeplearning",
+      "machinelearning"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2716815,
+    "title": "Building a Restaurant Menu App with JSON & React – Inspired by Olive Garden",
+    "snippet": "If you're learning frontend development or working on portfolio projects, creating a menu-based app...",
+    "url": "https://dev.to/johan_smith_6110186d16f54/building-a-restaurant-menu-app-with-json-react-inspired-by-olive-garden-2bj0",
+    "tags": [
+      "react",
+      "json",
+      "frontend",
+      "portfolio"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2713839,
+    "title": "MicroFrontend with Module Federation (Full Configuration)",
+    "snippet": "MicroFrontend:  An architectural style where a frontend application is split into smaller,...",
+    "url": "https://dev.to/sabareeswaran_chandraseka/microfrontend-with-module-federation-full-configuration-2d48",
+    "tags": [
+      "microfrontend",
+      "react",
+      "modulefederation",
+      "webpack"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2716761,
+    "title": "Feature sliced design vs clean architecture",
+    "snippet": "Introduction   This post is an extension of my previous article about clean...",
+    "url": "https://dev.to/skorphil/feature-sliced-design-vs-clean-architecture-3m5k",
+    "tags": [
+      "webdev",
+      "frontend",
+      "architecture",
+      "react"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2716705,
+    "title": "How to set up Stripe with Nextjs",
+    "snippet": "Create Nextjs project      npx create-next-app &lt;app-name&gt;        Enter fullscreen...",
+    "url": "https://dev.to/thatanjan/how-to-set-up-stripe-with-nextjs-2ebp",
+    "tags": [
+      "stripe",
+      "nextjs",
+      "react",
+      "webdev"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720302,
+    "title": "Kimi K2 vs Qwen-3 Coder: 12 Hours of Testing!",
+    "snippet": "Kimi K2 vs Qwen-3 Coder: 12 Hours of Testing! — Which AI coding model actually delivers in real-world development? We spent over 12 hours testing Kimi K2 and Qwen-3 Coder with Rust and React tasks to compare output quality, speed, and value for developers.",
+    "url": "https://dev.to/forgecode/kimi-k2-vs-qwen-3-coder-12-hours-of-testing-3dil",
+    "tags": [
+      "webdev",
+      "programming",
+      "javascript",
+      "ai"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720335,
+    "title": "Next-Level Intranet: OfficeSpace with Dark Mode & Widgets",
+    "snippet": "This is a submission for Frontend Challenge: Office Edition sponsored by Axero, Holistic Webdev:...",
+    "url": "https://dev.to/adonaitechnologies/next-level-intranet-officespace-with-dark-mode-widgets-de7",
+    "tags": [
+      "devchallenge",
+      "frontendchallenge",
+      "css",
+      "javascript"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2718300,
+    "title": "Is `toLocaleString` Useful? Absolutely! Here's How to Format Data Smartly with JavaScript",
+    "snippet": "When building web applications, we often deal with raw data from APIs or real-time calculations. But...",
+    "url": "https://dev.to/werliton/is-tolocalestring-useful-absolutely-heres-how-to-format-data-smartly-with-javascript-1d21",
+    "tags": [
+      "webdev",
+      "programming",
+      "javascript",
+      "beginners"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720321,
+    "title": "🌏🌌Please share your thoughts and support 😍",
+    "snippet": "🌌 Nebula Works – A Futuristic Admin Dashboard Built with Pure...",
+    "url": "https://dev.to/vidakhoshpey22/please-share-your-thoughts-and-support-4ba2",
+    "tags": [
+      "devchallenge",
+      "frontendchallenge",
+      "css",
+      "javascript"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720548,
+    "title": "Miratos_Intranet_Dashboard",
+    "snippet": "This is a submission for Frontend Challenge: Office Edition sponsored by Axero, Holistic Webdev:...",
+    "url": "https://dev.to/arra_deepthi_ee4f2e84a2ff/miratosintranetdashboard-162e",
+    "tags": [
+      "devchallenge",
+      "frontendchallenge",
+      "css",
+      "javascript"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720536,
+    "title": "[Boost] Writing Clean, Secure Node.js APIs – A Checklist You’ll Actually Use",
+    "snippet": "Writing Clean, Secure Node.js APIs – A Checklist You’ll...",
+    "url": "https://dev.to/gnrlbzik/-1ckp",
+    "tags": [
+      "node",
+      "javascript",
+      "api",
+      "webdev"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719496,
+    "title": "JAVASCRIPT-LOCAL STORAGE",
+    "snippet": "Today I will explain about localStorage in JS which is used to store data from our web page in the...",
+    "url": "https://dev.to/asran_2025/javascript-local-storage-5blg",
+    "tags": [
+      "webdev",
+      "javascript"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719391,
+    "title": "I spent 6 months creating something that already exists - but in better",
+    "snippet": "I built myprofile.lol – a Linktree alternative with ShareX integration   Hey,    I’m a...",
+    "url": "https://dev.to/canyslypys/i-spent-6-months-creating-something-that-already-exists-but-in-better-1jjf",
+    "tags": [
+      "webdev",
+      "programming",
+      "javascript",
+      "learning"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720254,
+    "title": "NodeJS Fundamentals: getElementsByClassName",
+    "snippet": "Diving Deep into getElementsByClassName: A Production-Grade Guide           ...",
+    "url": "https://dev.to/devopsfundamentals/nodejs-fundamentals-getelementsbyclassname-545i",
+    "tags": [
+      "runtime",
+      "programming",
+      "javascript",
+      "getelementsbyclassname"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2692506,
+    "title": "🚀 AquaScript – Supercharge Your Projects with the Fastest Free JSON APIs | No Signup, No Limits, Just Build! 🌐",
+    "snippet": "Are you a developer who’s tired of slow APIs, complicated setups, or endless signup forms? Skip the...",
+    "url": "https://dev.to/hanzla-baig/aquascript-supercharge-your-projects-with-the-fastest-free-json-apis-no-signup-no-limits-4e75",
+    "tags": [
+      "ai",
+      "api",
+      "javascript",
+      "programming"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720398,
+    "title": "SwiftUI for React Native Developers | part 01",
+    "snippet": "🚀 Introduction Ever since I started my career as a software developer more than 10 years ago, I’ve...",
+    "url": "https://dev.to/codetodeploy/swiftui-for-react-native-developers-part-01-4nng",
+    "tags": [
+      "programming",
+      "beginners",
+      "javascript"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2716517,
+    "title": "The Ultimate Guide to Software Architecture in Next.js: From Monolith to Microservices",
+    "snippet": "When building web applications with Next.js, one of the most critical — and often overlooked —...",
+    "url": "https://dev.to/shayan_saed/the-ultimate-guide-to-software-architecture-in-nextjs-from-monolith-to-microservices-i2c",
+    "tags": [
+      "nextjs",
+      "webdev",
+      "javascript",
+      "architecture"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719646,
+    "title": "A Dream Intranet Homepage",
+    "snippet": "Design Inspiration   When brainstorming my intranet homepage, I thought about what would...",
+    "url": "https://dev.to/cliffordisaboke/a-dream-intranet-homepage-44on",
+    "tags": [
+      "devchallenge",
+      "frontendchallenge",
+      "css",
+      "javascript"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2718686,
+    "title": "How Web Browsers Work: A Developer's Deep Dive",
+    "snippet": "Ever wondered what magic happens between typing google.com and seeing that familiar search page?...",
+    "url": "https://dev.to/mohammad1105/how-web-browsers-work-a-developers-deep-dive-545d",
+    "tags": [
+      "webdev",
+      "browser",
+      "javascript"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719018,
+    "title": "A Simple Way to Build a Progress Bar for Your Website’s Image Uploader Using Filestack",
+    "snippet": "If you’re building any kind of image uploader for a website, you’ll quickly realize that a basic file...",
+    "url": "https://dev.to/ideradevtools/a-simple-way-to-build-a-progress-bar-for-your-websites-image-uploader-using-filestack-3ae7",
+    "tags": [
+      "filestack",
+      "javascript",
+      "webdev",
+      "programming"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719527,
+    "title": "7 Frontend Development Trends Shaping 2025",
+    "snippet": "🚀 Why This Matters   Frontend development is changing faster than ever. Between AI tools,...",
+    "url": "https://dev.to/shaahzaibrehman/7-frontend-development-trends-shaping-2025-5h34",
+    "tags": [
+      "webdev",
+      "programming",
+      "javascript",
+      "ai"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2623862,
+    "title": "Best FREE Secrets Manager - Deploy Infisical on Sliplane with Docker",
+    "snippet": "Infisical is an open-source secrets management platform that helps you securely store, sync, and...",
+    "url": "https://dev.to/wimadev/best-free-secrets-manager-deploy-infisical-on-sliplane-with-docker-2dem",
+    "tags": [
+      "webdev",
+      "docker",
+      "sliplane",
+      "devops"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720502,
+    "title": "🚀 Step-by-Step: Setup + GET Method in FastAPI",
+    "snippet": "🚀 Step-by-Step: Setup + GET Method in FastAPI               🧪 1. Set up Virtual Environment...",
+    "url": "https://dev.to/dpvasani56/step-by-step-setup-get-method-in-fastapi-2bb6",
+    "tags": [
+      "webdev",
+      "programming",
+      "fastapi",
+      "python"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720210,
+    "title": "Modern Server-Side Event Implementation(9537)",
+    "snippet": "Hyperlane is a lightweight and high-performance Rust HTTP server library designed to simplify network service development. It supports HTTP request parsing, response building, TCP communication, and redirection features, making it ideal for building modern web services.",
+    "url": "https://dev.to/member_8c78b76f/modern-server-side-event-implementation9537-m5b",
+    "tags": [
+      "webdev",
+      "programming",
+      "rust",
+      "java"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720246,
+    "title": "What Vibe Coding Actually Looks Like for a Senior Engineer",
+    "snippet": "Vibe coding reality: My 20-hour journey building with AI peer programming. What senior engineers actually experience beyond the 1-hour hype.",
+    "url": "https://dev.to/pmbanugo/what-vibe-coding-actually-looks-like-for-a-senior-engineer-1jgl",
+    "tags": [
+      "ai",
+      "opensource",
+      "node",
+      "webdev"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720202,
+    "title": "Terraform: How to Deploy Compute Engine, Network, and Subnet with Terraform on GCP",
+    "snippet": "I'm exited to share with you a comprehensive guide on deploying compute engine, network and Subnet on...",
+    "url": "https://dev.to/christiana_orji/terraform-how-to-deploy-compute-engine-network-and-subnet-with-terraform-on-gcp-1f4h",
+    "tags": [
+      "webdev",
+      "terraform",
+      "beginners",
+      "gcp"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720518,
+    "title": "Understanding Docker Buildx & Builder: Modern Docker Builds with BuildKit",
+    "snippet": "Hi there! I'm Maneshwar. Right now, I’m building LiveAPI, a first-of-its-kind tool that helps you...",
+    "url": "https://dev.to/lovestaco/understanding-docker-buildx-builder-modern-docker-builds-with-buildkit-1hd",
+    "tags": [
+      "webdev",
+      "programming",
+      "docker",
+      "beginners"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720440,
+    "title": "🚀 How to Automate Laravel Deployments to Shared Hosting Using GitHub Actions + FTP",
+    "snippet": "Deploying Laravel projects to shared hosting manually — via tools like FileZilla — can be...",
+    "url": "https://dev.to/jonathan_lamseck/how-i-automated-laravel-deployments-to-shared-hosting-using-github-actions-ftp-2go6",
+    "tags": [
+      "laravel",
+      "webdev",
+      "githubactions",
+      "php"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720430,
+    "title": "MP3 Stream Shell",
+    "snippet": "We found a solution with Github as a media server. Our URL to MP3 converter stream server serves as...",
+    "url": "https://dev.to/max_kleiner_9d12e786b3ecc/mp3-stream-shell-1cod",
+    "tags": [
+      "programming",
+      "webdev",
+      "maxbox",
+      "music"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720355,
+    "title": "Centralized Data Is No Longer a Luxury, It’s a Performance Driver",
+    "snippet": "Thanks to modern web development, data centralization is no longer abstract. It's sophisticated and...",
+    "url": "https://dev.to/capjud95/centralized-data-is-no-longer-a-luxury-its-a-performance-driver-57jb",
+    "tags": [
+      "data",
+      "datascience",
+      "webdev",
+      "database"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720351,
+    "title": "MarkDown CheetSheet",
+    "snippet": "Markdown is a lightweight markup language used to format plain text. It’s commonly used in README...",
+    "url": "https://dev.to/sriram_bharath/markdown-cheetsheet-2pn8",
+    "tags": [
+      "webdev",
+      "programming",
+      "markdown",
+      "learning"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720343,
+    "title": "The Best Free Text-to-Speech Tool I Found (And It's Not What You Think)",
+    "snippet": "Hey devs, creators, and curious minds 👋  If you're hunting for a text-to-speech (TTS) tool that’s...",
+    "url": "https://dev.to/sriram_bharath/the-best-free-text-to-speech-tool-i-found-and-its-not-what-you-think-3nc9",
+    "tags": [
+      "webdev",
+      "ai",
+      "learning",
+      "google"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720259,
+    "title": "Report from Nuxt auto-import pitfall",
+    "snippet": "We all have been there, right? Spending frustrating hours trying to solve a mysterious bug. Nothing...",
+    "url": "https://dev.to/aloisseckar/report-from-nuxt-auto-import-pitfall-21fn",
+    "tags": [
+      "nuxt",
+      "webdev",
+      "coding",
+      "frontend"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2711172,
+    "title": "What are Your Daily Driver Apps??",
+    "snippet": "So Gemini has a feature to use the search history of the user for context. I never thought how I...",
+    "url": "https://dev.to/dirsebastian/what-are-your-daily-driver-apps-442k",
+    "tags": [
+      "webdev",
+      "programming",
+      "ai",
+      "productivity"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2718468,
+    "title": "Build a Fullstack Stock Portfolio Agent with LangGraph and AG-UI",
+    "snippet": "In this guide, you will learn how to integrate a LangGraph agent with AG-UI protocol. Also, we will...",
+    "url": "https://dev.to/copilotkit/build-a-fullstack-stock-portfolio-agent-with-langgraph-and-ag-ui-5da0",
+    "tags": [
+      "webdev",
+      "programming",
+      "opensource",
+      "ai"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720393,
+    "title": "Day 5 of My 180-Day Developer Challenge: Asking \"Why?\" Makes Every New Skill Easier to Learn",
+    "snippet": "My Secret to Tackling Tough Topics: Always Start With \"Why?\". Whenever I learn something new, I first...",
+    "url": "https://dev.to/mukesh_89c92348d548aeb227/day-5-of-my-180-day-developer-challenge-asking-why-makes-every-new-skill-easier-to-learn-p2i",
+    "tags": [
+      "cicd",
+      "webdev",
+      "programming",
+      "devchallenge"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720278,
+    "title": "Request For Assistance",
+    "snippet": "Good morning, everyone!   I'm reaching out to the community for some advice and...",
+    "url": "https://dev.to/daoistrose/request-for-assistance-30e4",
+    "tags": [
+      "webdev",
+      "python",
+      "discuss",
+      "community"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720307,
+    "title": "🧩 Day 1: Starting Leetronix",
+    "snippet": "No big launch. No buzz. Just writing things down. ✍️  Today I officially started shaping Leetronix —...",
+    "url": "https://dev.to/alina_khmilevska_lee/day-1-starting-leetronix-5ee3",
+    "tags": [
+      "leetronix",
+      "buildinpublic",
+      "techstartup",
+      "webdev"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2719903,
+    "title": "8 Lesser-Known AI Projects to Improve Your Developer Productivity ⚡️🔥",
+    "snippet": "Artificial intelligence is revolutionizing the developers' approach to building, testing, and...",
+    "url": "https://dev.to/madza/8-lesser-known-ai-projects-to-improve-your-developer-productivity-4bjb",
+    "tags": [
+      "ai",
+      "coding",
+      "programming",
+      "productivity"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720501,
+    "title": "Using MCP Inspector to Test Tools, Prompts, and Resources",
+    "snippet": "MCP Inspector provides a clear UI to view and interact with the server's available tools, prompts,...",
+    "url": "https://dev.to/om_shree_0709/using-mcp-inspector-to-test-tools-prompts-and-resources-3okg",
+    "tags": [
+      "ai",
+      "beginners",
+      "productivity",
+      "devops"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720413,
+    "title": "Forked by Cursor: The Hidden Cost of VS Code Fragmentation",
+    "snippet": "It's the story of the year in developer tooling. Visual Studio Code, the open-source editor that...",
+    "url": "https://dev.to/pullflow/forked-by-cursor-the-hidden-cost-of-vs-code-fragmentation-4p1",
+    "tags": [
+      "programming",
+      "vscode",
+      "ai",
+      "opensource"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720318,
+    "title": "Uncovering Family History with Cloudinary’s Image Transformations and MCP Servers",
+    "snippet": "There’s a peculiar human desire to reconnect with their past by looking for clues in family trees....",
+    "url": "https://dev.to/cloudinary/uncovering-family-history-with-cloudinarys-image-transformations-and-mcp-servers-1484",
+    "tags": [
+      "codenewbie",
+      "mcp",
+      "programming",
+      "ai"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720373,
+    "title": "Is MCP the Secret to Smarter AI Coding in 2025?",
+    "snippet": "Discover how the Model Context Protocol (MCP) makes AI coding easier for developers in 2025. Learn its perks and why it’s a big deal!",
+    "url": "https://dev.to/eleftheriabatsou/is-mcp-the-secret-to-smarter-ai-coding-in-2025-4nkg",
+    "tags": [
+      "ai",
+      "aidd",
+      "mcp"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2645408,
+    "title": "Meta prompt; Why your prompt alone may be limiting your LLM",
+    "snippet": "There's a good chance you are not getting the best out of your LLM (Large Language Model) not because...",
+    "url": "https://dev.to/joshtom/meta-prompt-why-your-prompt-alone-may-be-limiting-your-llm-4co5",
+    "tags": [
+      "promptengineering",
+      "llm",
+      "ai"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720524,
+    "title": "How I Built a Self-Updating AI Sales Agent for Using Perplexity Public Rooms",
+    "snippet": "Imagine having a 24/7 AI-powered sales rep who knows everything about your company, reads your case...",
+    "url": "https://dev.to/alifar/how-i-built-a-self-updating-ai-sales-agent-for-using-perplexity-public-rooms-547h",
+    "tags": [
+      "perplexity",
+      "ai",
+      "salesagent",
+      "runnerhchallenge"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720512,
+    "title": "Get started on building AI Automations in Salesforce with Agentforce",
+    "snippet": "Supercharge Your Recruiters: Building AI-Powered Automation in...",
+    "url": "https://dev.to/hemantj/get-started-on-building-ai-automations-in-salesforce-with-agentforce-3oh6",
+    "tags": [
+      "ai",
+      "saas",
+      "agentforce",
+      "salesforce"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720497,
+    "title": "I built a Supercharged PDFs-ChatBot with LangChain and Streamlit, and you can too!",
+    "snippet": "A step-by-step journey into building a flexible, multi-provider RAG application that lets you talk to...",
+    "url": "https://dev.to/harith_y_a97ea256afe8255f/i-built-a-supercharged-pdfs-chatbot-with-langchain-and-streamlit-and-you-can-too-1h1",
+    "tags": [
+      "langchain",
+      "streamlit",
+      "ai",
+      "chatbot"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720504,
+    "title": "New project",
+    "snippet": "I built a Supercharged PDFs-ChatBot with LangChain and...",
+    "url": "https://dev.to/harith_y_a97ea256afe8255f/new-project-5dce",
+    "tags": [
+      "langchain",
+      "streamlit",
+      "ai",
+      "chatbot"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720409,
+    "title": "We’re live on Product Hunt today! Support us here https://www.producthunt.com/products/microtica-ai-agents-for-devops",
+    "snippet": "AI-Powered Root Cause Analysis:...",
+    "url": "https://dev.to/mmarulka/were-live-on-product-hunt-today-support-us-here--2kmk",
+    "tags": [
+      "ai",
+      "devops",
+      "infrastructureascode"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720346,
+    "title": "AI Project 0",
+    "snippet": "This post is my submission for DEV Education Track: Build Apps with Google AI Studio.           What...",
+    "url": "https://dev.to/xantherius/ai-project-0-e8a",
+    "tags": [
+      "deved",
+      "learngoogleaistudio",
+      "ai",
+      "gemini"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720424,
+    "title": "Inside AgentUp: The Architecture That Makes AI Agents Actually Work",
+    "snippet": "We built AgentUp with a - configuration-driven architecture that scales from prototype to production...",
+    "url": "https://dev.to/lukehinds/inside-agentup-the-architecture-that-makes-ai-agents-actually-work-47mm",
+    "tags": [
+      "agents",
+      "ai",
+      "programming"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720314,
+    "title": "Designing Smart Multi-Agent Workflows with Agno & LangDB",
+    "snippet": "Build a multi-agent financial analysis team with LangDB and Agno that can reason, research, and...",
+    "url": "https://dev.to/langdb/designing-smart-multi-agent-workflows-with-agno-langdb-nic",
+    "tags": [
+      "agent",
+      "agno",
+      "ai",
+      "phidata"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720581,
+    "title": "Advanced HLS Analytics: AVFoundation Metrics in iOS 18",
+    "snippet": "Understanding HLS Analytics: The Foundation            What is HLS (HTTP Live...",
+    "url": "https://dev.to/arshtechpro/advanced-hls-analytics-mastering-avfoundation-metrics-in-ios-18-13io",
+    "tags": [
+      "ios",
+      "mobile",
+      "programming",
+      "softwaredevelopment"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2717370,
+    "title": "How to set a timeout to RSpec test executions",
+    "snippet": "TL;DR   Tired of tests hanging indefinitely in your CI pipeline, wasting resources and...",
+    "url": "https://dev.to/lcsm0n/how-to-set-a-timeout-to-rspec-test-executions-2gc9",
+    "tags": [
+      "rails",
+      "ruby",
+      "opensource",
+      "programming"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720575,
+    "title": "Picking the Right Auth Protocol: OAuth2, OIDC, or SAML?",
+    "snippet": "Hi there! I'm Shrijith Venkatrama, founder of Hexmos. Right now, I’m building LiveAPI, a first of its...",
+    "url": "https://dev.to/shrsv/picking-the-right-auth-protocol-oauth2-oidc-or-saml-2nfo",
+    "tags": [
+      "programming",
+      "beginners",
+      "productivity",
+      "devops"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720370,
+    "title": "🧠 Từ Cơ Bản Đến Trung Bình: Hành Trình Học Thuật Toán",
+    "snippet": "Các chủ đề và mức độ từ cơ bản đến trung bình      Chủ đề Mức độ Vai trò trong học...",
+    "url": "https://dev.to/kimhieu14/tu-co-ban-den-trung-binh-hanh-trinh-hoc-thuat-toan-oah",
+    "tags": [
+      "algorithms",
+      "programming",
+      "beginners",
+      "learning"
+    ],
+    "source": "dev.to"
+  },
+  {
+    "objectID": 2720186,
+    "title": "A Subtle Memory Leak in Go You Might Miss",
+    "snippet": "When we think of memory leaks, we usually imagine something obvious like forgetting to close a file...",
+    "url": "https://dev.to/yash007_95/a-subtle-memory-leak-in-go-you-might-miss-48ef",
+    "tags": [
+      "webdev",
+      "programming",
+      "go",
+      "learning"
+    ],
+    "source": "dev.to"
+  }
+]

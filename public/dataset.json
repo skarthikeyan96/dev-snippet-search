@@ -1,0 +1,60 @@
+{
+  "snippets": [
+    {
+      "id": "1",
+      "title": "React useState Hook Example",
+      "description": "Basic example of using React useState hook for state management",
+      "code": "import React, { useState } from 'react';\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  \n  return (\n    <div>\n      <p>Count: {count}</p>\n      <button onClick={() => setCount(count + 1)}>\n        Increment\n      </button>\n    </div>\n  );\n}",
+      "language": "javascript",
+      "tags": ["react", "hooks", "state", "counter"],
+      "category": "frontend",
+      "createdAt": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": "2",
+      "title": "Node.js Express API Setup",
+      "description": "Basic Express.js server setup with middleware configuration",
+      "code": "const express = require('express');\nconst cors = require('cors');\nconst app = express();\n\n// Middleware\napp.use(cors());\napp.use(express.json());\n\n// Routes\napp.get('/api/health', (req, res) => {\n  res.json({ status: 'OK', timestamp: new Date() });\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n  console.log(`Server running on port ${PORT}`);\n});",
+      "language": "javascript",
+      "tags": ["nodejs", "express", "api", "server"],
+      "category": "backend",
+      "createdAt": "2024-01-16T14:20:00Z"
+    },
+    {
+      "id": "3",
+      "title": "CSS Grid Layout Example",
+      "description": "Responsive CSS Grid layout for modern web design",
+      "code": ".grid-container {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n  gap: 1rem;\n  padding: 1rem;\n}\n\n.grid-item {\n  background: #f5f5f5;\n  padding: 1rem;\n  border-radius: 8px;\n  box-shadow: 0 2px 4px rgba(0,0,0,0.1);\n}\n\n@media (max-width: 768px) {\n  .grid-container {\n    grid-template-columns: 1fr;\n  }\n}",
+      "language": "css",
+      "tags": ["css", "grid", "responsive", "layout"],
+      "category": "frontend",
+      "createdAt": "2024-01-17T09:15:00Z"
+    },
+    {
+      "id": "4",
+      "title": "Python Data Processing with Pandas",
+      "description": "Example of data processing and analysis using pandas",
+      "code": "import pandas as pd\nimport numpy as np\n\n# Load data\ndf = pd.read_csv('data.csv')\n\n# Basic data cleaning\ndf = df.dropna()\ndf = df[df['value'] > 0]\n\n# Group by and aggregate\ngrouped = df.groupby('category').agg({\n    'value': ['mean', 'sum', 'count']\n}).round(2)\n\nprint(grouped)",
+      "language": "python",
+      "tags": ["python", "pandas", "data-processing", "analysis"],
+      "category": "data-science",
+      "createdAt": "2024-01-18T16:45:00Z"
+    },
+    {
+      "id": "5",
+      "title": "TypeScript Interface Definition",
+      "description": "TypeScript interface for user data structure",
+      "code": "interface User {\n  id: string;\n  name: string;\n  email: string;\n  age?: number;\n  preferences: {\n    theme: 'light' | 'dark';\n    notifications: boolean;\n  };\n}\n\ninterface ApiResponse<T> {\n  data: T;\n  status: 'success' | 'error';\n  message?: string;\n}\n\n// Usage example\nconst user: User = {\n  id: '123',\n  name: 'John Doe',\n  email: 'john@example.com',\n  preferences: {\n    theme: 'dark',\n    notifications: true\n  }\n};",
+      "language": "typescript",
+      "tags": ["typescript", "interface", "types", "user"],
+      "category": "frontend",
+      "createdAt": "2024-01-19T11:30:00Z"
+    }
+  ],
+  "metadata": {
+    "totalSnippets": 5,
+    "lastUpdated": "2024-01-19T11:30:00Z",
+    "categories": ["frontend", "backend", "data-science"],
+    "languages": ["javascript", "css", "python", "typescript"]
+  }
+}
