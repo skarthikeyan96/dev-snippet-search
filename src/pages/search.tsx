@@ -179,11 +179,11 @@ export default function SnippetSearchApp() {
 
             return `
               <div class="hover:shadow-lg transition-shadow rounded-lg border bg-card text-card-foreground shadow-sm">
-                <div class="p-6">
-                  <div class="flex justify-between items-start mb-3">
-                    <h3 class="text-xl font-semibold text-gray-900">${titleText}</h3>
-                    <div class="flex items-center gap-2">
-                      <span class="text-foreground inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                <div class="p-4 sm:p-6">
+                  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 flex-1">${titleText}</h3>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                      <span class="text-foreground inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-gray-100 text-gray-700">
                         ${sourceText}
                       </span>
                       <button 
@@ -205,16 +205,16 @@ export default function SnippetSearchApp() {
                     </div>
                   </div>
 
-                  <div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm overflow-x-auto prose prose-sm max-w-none">
+                  <div class="bg-gray-50 rounded-lg p-3 sm:p-4 mb-4 text-sm overflow-x-auto prose prose-sm max-w-none">
                     <div class="whitespace-pre-wrap">${cleanSnippetText}</div>
                   </div>
 
-                  <div class="flex items-center justify-between">
-                    <div class="flex flex-wrap gap-2">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div class="flex flex-wrap gap-1 sm:gap-2">
                       ${tagArray
                         .map(
                           (tag) =>
-                            `<span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mr-2 mb-2">${parseMarkdownInTag(
+                            `<span class="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">${parseMarkdownInTag(
                               tag
                             )}</span>`
                         )
@@ -222,7 +222,7 @@ export default function SnippetSearchApp() {
                     </div>
                     <a href="${
                       hit.url
-                    }" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
+                    }" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 self-start sm:self-auto">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                       </svg>
@@ -250,10 +250,10 @@ export default function SnippetSearchApp() {
       pagination({
         container: "#algolia-pagination",
         cssClasses: {
-          root: "flex justify-center items-center gap-2 mt-8",
-          list: "flex gap-1",
+          root: "flex justify-center items-center gap-1 sm:gap-2 mt-8",
+          list: "flex gap-1 sm:gap-2",
           item: "",
-          link: "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-10 w-10",
+          link: "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-8 w-8 sm:h-10 sm:w-10",
           selectedItem: "",
           disabledItem: "opacity-50 pointer-events-none",
           previousPageItem: "",
@@ -348,10 +348,10 @@ export default function SnippetSearchApp() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
             Snippet Search
           </h1>
           <p className="text-gray-600">
@@ -381,7 +381,7 @@ export default function SnippetSearchApp() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
               <div id="algolia-searchbox"></div>
             </div>
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-2 gap-1">
               <p className="text-sm text-gray-500">Search powered by Algolia</p>
               <div className="flex items-center gap-1 text-xs text-gray-400">
                 <span>Powered by</span>
@@ -405,19 +405,19 @@ export default function SnippetSearchApp() {
         {showSavedModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-hidden">
-              <div className="flex items-center justify-between p-6 border-b">
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                  <Bookmark className="w-6 h-6" />
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+                  <Bookmark className="w-5 h-5 sm:w-6 sm:h-6" />
                   Saved Snippets ({savedSnippets.length})
                 </h2>
                 <button
                   onClick={() => setShowSavedModal(false)}
                   className="text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
-              <div className="p-6 overflow-y-auto max-h-[calc(80vh-120px)]">
+              <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(80vh-120px)]">
                 {savedSnippets.length === 0 ? (
                   <div className="text-center py-12">
                     <Bookmark className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -451,16 +451,16 @@ export default function SnippetSearchApp() {
                           key={snippet.objectID}
                           className="hover:shadow-lg transition-shadow rounded-lg border bg-card text-card-foreground shadow-sm border-l-4 border-l-blue-500"
                         >
-                          <div className="p-6">
-                            <div className="flex justify-between items-start mb-3">
-                              <h3 className="text-xl font-semibold text-gray-900">
+                          <div className="p-4 sm:p-6">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-3">
+                              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 flex-1">
                                 {snippet.title}
                               </h3>
-                              <div className="flex items-center gap-2">
-                                <span className="text-foreground inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                              <div className="flex items-center gap-2 flex-shrink-0">
+                                <span className="text-foreground inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-gray-100 text-gray-700">
                                   {snippet.source}
                                 </span>
-                                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-blue-100 text-blue-800">
+                                <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-blue-100 text-blue-800">
                                   Saved
                                 </span>
                                 <button
@@ -474,18 +474,18 @@ export default function SnippetSearchApp() {
                               </div>
                             </div>
 
-                            <div className="bg-gray-50 rounded-lg p-4 mb-4 text-sm overflow-x-auto prose prose-sm max-w-none">
+                            <div className="bg-gray-50 rounded-lg p-3 sm:p-4 mb-4 text-sm overflow-x-auto prose prose-sm max-w-none">
                               <div className="whitespace-pre-wrap">
                                 {cleanSnippetText}
                               </div>
                             </div>
 
-                            <div className="flex items-center justify-between">
-                              <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                              <div className="flex flex-wrap gap-1 sm:gap-2">
                                 {tagArray.map((tag, index) => (
                                   <span
                                     key={index}
-                                    className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mr-2 mb-2"
+                                    className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80"
                                     dangerouslySetInnerHTML={{
                                       __html: parseMarkdownInTag(tag),
                                     }}
@@ -496,7 +496,7 @@ export default function SnippetSearchApp() {
                                 href={snippet.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3"
+                                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 self-start sm:self-auto"
                               >
                                 <ExternalLink className="w-4 h-4" />
                                 Read more
