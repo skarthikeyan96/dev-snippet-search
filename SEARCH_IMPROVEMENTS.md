@@ -531,6 +531,195 @@ interface SearchHit {
 9. **Build Optimization**: Significantly reduced bundle size and improved performance
 10. **Dependency Management**: Clean, minimal dependencies with only necessary packages
 
+## Analytics System
+
+### Two-Tier Analytics Implementation
+
+**Problem**: Need for analytics without exposing sensitive data to regular users.
+
+**Solution**: Implemented a privacy-focused, two-tier analytics system.
+
+#### **1. Developer Analytics Dashboard**
+
+**Features**:
+
+- **Hidden by default** - Only accessible in developer mode
+- **Activation methods**:
+  - URL parameter: `?dev=true`
+  - localStorage flag: `snippet-search-dev-mode=true`
+- **Comprehensive data**:
+  - Session and user IDs (truncated for privacy)
+  - Performance metrics (page load time, bundle size, device info)
+  - User behavior tracking (searches, bookmarks, modal interactions)
+  - Event counts and recent activity
+  - Search queries and source filtering
+- **Privacy controls**:
+  - Clear privacy notices
+  - Data export functionality
+  - Easy developer mode disable option
+- **Visual indicators**:
+  - Yellow "DEV MODE" badge when active
+  - Positioned on right side (📊 button)
+
+**Code Structure**:
+
+```typescript
+// Developer mode check
+const isDev =
+  urlParams.get("dev") === "true" ||
+  localStorage.getItem("snippet-search-dev-mode") === "true";
+
+// Only render if in developer mode
+if (!isDeveloperMode) return null;
+```
+
+#### **2. User Analytics Component**
+
+**Features**:
+
+- **Always visible** - Shows basic, user-friendly statistics
+- **Privacy-focused** - Only non-sensitive information
+- **Clean UI** - Simple, engaging statistics display
+- **Local storage emphasis** - Clear data privacy messaging
+- **Positioned on left side** (📈 button)
+
+**Data Displayed**:
+
+- Saved snippets count
+- Total searches performed
+- Modal interactions
+- Page load performance
+- Privacy notice about local storage
+
+**Code Structure**:
+
+```typescript
+interface UserAnalyticsProps {
+  savedSnippetsCount: number;
+}
+
+// Only shows basic stats without sensitive data
+const totalSearches = analytics.userBehavior.searchQueries.length;
+const totalInteractions = analytics.userBehavior.modalInteractions;
+```
+
+### Analytics Core System
+
+#### **Analytics Library** (`src/lib/analytics.ts`)
+
+**Features**:
+
+- **TypeScript support** with proper interfaces
+- **Session tracking** with unique user/session IDs
+- **Performance monitoring** (page load, bundle size, device detection)
+- **User behavior tracking**:
+  - Search queries and patterns
+  - Snippet save/unsave actions
+  - Modal interactions (open/close)
+  - External link clicks
+  - Source filtering usage
+  - Pagination usage
+- **Privacy-focused**:
+  - All data stored locally
+  - No third-party dependencies
+  - User control over data collection
+
+**Key Methods**:
+
+```typescript
+class Analytics {
+  trackEvent(event: string, data?: Record<string, unknown>): void;
+  trackSnippetSave(snippetId: string, action: "save" | "unsave"): void;
+  trackModalInteraction(modalType: string, action: "open" | "close"): void;
+  trackExternalLink(url: string, source: string): void;
+  getAnalyticsSummary(): AnalyticsSummary;
+  exportAnalytics(): string;
+}
+```
+
+#### **Analytics API Endpoint** (`src/pages/api/analytics.ts`)
+
+**Features**:
+
+- **Next.js API route** for data collection
+- **POST endpoint** for receiving analytics events
+- **Console logging** for development debugging
+- **Error handling** with proper HTTP status codes
+- **Production ready** - can be extended to forward to databases
+
+**Usage**:
+
+```typescript
+// Sends analytics events to /api/analytics
+await fetch("/api/analytics", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(analyticsEvent),
+});
+```
+
+### Integration Points
+
+#### **Search Page Integration** (`src/pages/search.tsx`)
+
+**Analytics Tracking**:
+
+- **Page view tracking** on component mount
+- **Snippet save/unsave** actions
+- **Modal interactions** (saved snippets modal)
+- **External link clicks** in search results and saved snippets
+- **Global analytics availability** for inline handlers
+
+**Code Examples**:
+
+```typescript
+// Initialize analytics
+const analytics = getAnalytics();
+
+// Track page view
+analytics.trackEvent("page_view", {
+  page: "/search",
+  savedSnippetsCount: saved.length,
+});
+
+// Track snippet actions
+analytics.trackSnippetSave(objectId, "save");
+
+// Track modal interactions
+analytics.trackModalInteraction("saved_snippets", "open");
+
+// Track external links
+onclick =
+  "window.analytics && window.analytics.trackExternalLink('${hit.url}', '${hit.source}')";
+```
+
+### Privacy and Security Features
+
+#### **Data Privacy**:
+
+- **Local storage only** - No data leaves user's device
+- **Truncated IDs** - Session/user IDs shown partially for privacy
+- **No PII collection** - No personal information gathered
+- **User control** - Easy to disable developer mode
+- **Clear notices** - Privacy explanations in both dashboards
+
+#### **Security Measures**:
+
+- **SSR safe** - Mock analytics for server-side rendering
+- **Error handling** - Graceful fallbacks if analytics fail
+- **Type safety** - Full TypeScript support
+- **No external dependencies** - Self-contained analytics system
+
+### Benefits
+
+1. **Privacy-First**: User data stays on device, no third-party tracking
+2. **Developer Friendly**: Comprehensive analytics when needed
+3. **User Friendly**: Simple stats for regular users
+4. **Performance**: Lightweight, no impact on app performance
+5. **Transparency**: Clear data handling and privacy notices
+6. **Flexibility**: Easy to extend and customize
+7. **Compliance**: GDPR-friendly with local storage approach
+
 ## Future Considerations
 
 1. **Enhanced Persistence**: Consider IndexedDB for larger storage capacity
@@ -545,6 +734,9 @@ interface SearchHit {
 10. **Further Bundle Optimization**: Consider code splitting and lazy loading
 11. **Image Optimization**: Implement proper image handling for better performance
 12. **Service Worker**: Add PWA capabilities for offline functionality
+13. **Analytics Enhancement**: Add more detailed user journey tracking
+14. **A/B Testing**: Implement analytics-driven feature testing
+15. **Performance Monitoring**: Add real-time performance alerts
 
 ## Technical Notes
 

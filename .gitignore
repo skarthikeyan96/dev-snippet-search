@@ -53,3 +53,9 @@ src/devto-snippets.json
 !eslint.config.mjs
 !postcss.config.mjs
 !next.config.ts
+
+# analytics and user data
+analytics-*.json
+user-analytics-*.json
+analytics-export-*.json
+localStorage-backup-*.json
