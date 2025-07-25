@@ -360,7 +360,42 @@ export default function SnippetSearchApp() {
       search.dispose();
       document.removeEventListener("click", handleBookmarkClick);
     };
-  }, [savedSnippets, toast, isHydrated]);
+  }, [toast, isHydrated]); // Removed savedSnippets from dependencies
+
+  // Update bookmark states when savedSnippets changes (without recreating search)
+  useEffect(() => {
+    if (!isHydrated || !searchInstanceRef.current) return;
+
+    // Update all bookmark buttons to reflect current saved state
+    const bookmarkButtons = document.querySelectorAll(".bookmark-btn");
+    bookmarkButtons.forEach((btn) => {
+      const objectId = btn.getAttribute("data-object-id");
+      if (objectId) {
+        const isSaved = savedSnippets.some(
+          (saved) => saved.objectID === objectId
+        );
+        const bookmarkBtn = btn as HTMLElement;
+
+        // Update data attribute
+        bookmarkBtn.setAttribute("data-saved", isSaved.toString());
+
+        // Update classes
+        if (isSaved) {
+          bookmarkBtn.classList.remove("text-gray-400", "hover:text-gray-600");
+          bookmarkBtn.classList.add("text-blue-600", "hover:text-blue-700");
+          bookmarkBtn.setAttribute("title", "Remove from saved");
+          const svg = bookmarkBtn.querySelector("svg");
+          if (svg) svg.classList.add("fill-current");
+        } else {
+          bookmarkBtn.classList.remove("text-blue-600", "hover:text-blue-700");
+          bookmarkBtn.classList.add("text-gray-400", "hover:text-gray-600");
+          bookmarkBtn.setAttribute("title", "Save snippet");
+          const svg = bookmarkBtn.querySelector("svg");
+          if (svg) svg.classList.remove("fill-current");
+        }
+      }
+    });
+  }, [savedSnippets, isHydrated]);
 
   const handleRemoveSavedSnippet = (snippet: SearchHit) => {
     setSavedSnippets((prev) =>
