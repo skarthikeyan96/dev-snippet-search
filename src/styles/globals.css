@@ -93,3 +93,7 @@
 button.ais-SearchBox-submit{
   display: none;
 }
+
+button.ais-SearchBox-reset{
+  display: none;
+}
