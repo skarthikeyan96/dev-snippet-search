@@ -1,28 +1,6 @@
 import type React from "react";
-import { useState, useEffect, useRef } from "react";
-import { Search, ChevronDown, ChevronUp, Plus, X, Zap } from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../components/ui/collapsible";
+import { useEffect, useRef } from "react";
+import { Search, Zap } from "lucide-react";
 import { algoliasearch } from "algoliasearch";
 import instantsearch, { InstantSearch } from "instantsearch.js";
 import {
@@ -30,18 +8,18 @@ import {
   hits,
   pagination,
   configure,
+  refinementList,
 } from "instantsearch.js/es/widgets";
+import { decode } from "he";
 
 interface SearchHit {
   objectID: string;
   _highlightResult: {
     title?: { value: string };
     snippet?: { value: string };
-    preview?: { value: string };
   };
   title: string;
   snippet: string;
-  preview: string;
   tags: string[] | string;
   source: string;
   url: string;
@@ -52,22 +30,34 @@ const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!
 );
 
+// Simple markdown parser for tags
+const parseMarkdownInTag = (tag: string): string => {
+  return (
+    tag
+      // Bold text: **text** or __text__
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/__(.*?)__/g, "<strong>$1</strong>")
+      // Italic text: *text* or _text_
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/_(.*?)_/g, "<em>$1</em>")
+      // Inline code: `code`
+      .replace(
+        /`(.*?)`/g,
+        '<code class="bg-gray-100 px-1 rounded text-xs">$1</code>'
+      )
+      // Links: [text](url)
+      .replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" class="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>'
+      )
+      // Strikethrough: ~~text~~
+      .replace(/~~(.*?)~~/g, '<del class="line-through">$1</del>')
+  );
+};
+
 export default function SnippetSearchApp() {
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
   const searchInstanceRef = useRef<InstantSearch | null>(null);
-
-  // Form state
-  const [formData, setFormData] = useState({
-    title: "",
-    snippet: "",
-    tags: "",
-    source: "",
-    customSource: "",
-  });
-  const [tagChips, setTagChips] = useState<string[]>([]);
-  const [currentTag, setCurrentTag] = useState("");
 
   // Initialize Algolia search
   useEffect(() => {
@@ -93,6 +83,18 @@ export default function SnippetSearchApp() {
             "absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600",
         },
       }),
+      refinementList({
+        container: "#algolia-filters",
+        attribute: "source",
+        cssClasses: {
+          root: "mb-4",
+          list: "flex flex-wrap gap-2",
+          item: "",
+          label: "flex items-center gap-2",
+          checkbox: "rounded border-gray-300",
+          count: "text-xs text-gray-500",
+        },
+      }),
       hits({
         container: "#algolia-hits",
         cssClasses: {
@@ -109,20 +111,25 @@ export default function SnippetSearchApp() {
               ? hit.tags.split(",").map((tag) => tag.trim())
               : [];
 
-            const tagHTML = tagArray
-              .map(
-                (tag) =>
-                  `<span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mr-2 mb-2">${tag}</span>`
-              )
-              .join("");
-
             const sourceText = hit.source || "Unknown Source";
             const titleText =
               hit._highlightResult.title?.value || hit.title || "";
             const snippetText =
               hit._highlightResult.snippet?.value || hit.snippet || "";
-            const previewText =
-              hit._highlightResult.preview?.value || hit.preview || "";
+
+            // Decode HTML entities and clean up the content
+            const decodedSnippetText = decode(snippetText);
+
+            // Remove HTML tags and extract clean text for display
+            const cleanSnippetText = decodedSnippetText
+              .replace(/<img[^>]*>/g, "") // Remove image tags
+              .replace(/<[^>]*>/g, "") // Remove all other HTML tags
+              .replace(/\s+/g, " ") // Normalize whitespace
+              .trim();
+
+            console.log("Original:", snippetText);
+            console.log("Decoded:", decodedSnippetText);
+            console.log("Clean:", cleanSnippetText);
 
             return `
               <div class="hover:shadow-lg transition-shadow rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -141,17 +148,24 @@ export default function SnippetSearchApp() {
                     </div>
                   </div>
 
-                  <div class="bg-gray-50 rounded-lg p-4 mb-4 font-mono text-sm overflow-x-auto">
-                    <pre class="whitespace-pre-wrap">${snippetText}</pre>
+                  <div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm overflow-x-auto prose prose-sm max-w-none">
+                    <div class="whitespace-pre-wrap">${cleanSnippetText}</div>
                   </div>
-
-                  <p class="text-gray-600 mb-4">${previewText}</p>
 
                   <div class="flex items-center justify-between">
                     <div class="flex flex-wrap gap-2">
-                      ${tagHTML}
+                      ${tagArray
+                        .map(
+                          (tag) =>
+                            `<span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mr-2 mb-2">${parseMarkdownInTag(
+                              tag
+                            )}</span>`
+                        )
+                        .join("")}
                     </div>
-                    <a href="${hit.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
+                    <a href="${
+                      hit.url
+                    }" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                       </svg>
@@ -182,7 +196,7 @@ export default function SnippetSearchApp() {
           root: "flex justify-center items-center gap-2 mt-8",
           list: "flex gap-1",
           item: "",
-          link: "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10",
+          link: "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-10 w-10",
           selectedItem: "",
           disabledItem: "opacity-50 pointer-events-none",
           previousPageItem: "",
@@ -199,40 +213,6 @@ export default function SnippetSearchApp() {
     };
   }, []);
 
-  const addTagChip = () => {
-    if (currentTag.trim() && !tagChips.includes(currentTag.trim())) {
-      setTagChips([...tagChips, currentTag.trim()]);
-      setCurrentTag("");
-    }
-  };
-
-  const removeTagChip = (tagToRemove: string) => {
-    setTagChips(tagChips.filter((tag) => tag !== tagToRemove));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log("Submitting snippet:", {
-      ...formData,
-      tags:
-        tagChips.length > 0
-          ? tagChips
-          : formData.tags.split(",").map((t) => t.trim()),
-    });
-
-    // Reset form
-    setFormData({
-      title: "",
-      snippet: "",
-      tags: "",
-      source: "",
-      customSource: "",
-    });
-    setTagChips([]);
-    setIsAdminOpen(false);
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto p-6">
@@ -245,166 +225,6 @@ export default function SnippetSearchApp() {
             Discover and manage code snippets from across the web
           </p>
         </div>
-
-        {/* Admin Panel */}
-        <Collapsible
-          open={isAdminOpen}
-          onOpenChange={setIsAdminOpen}
-          className="mb-8"
-        >
-          <CollapsibleTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-full justify-between mb-4 bg-transparent"
-            >
-              <span className="flex items-center gap-2">
-                <Plus className="w-4 h-4" />
-                Add New Snippet (Admin)
-              </span>
-              {isAdminOpen ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <Card>
-              <CardHeader>
-                <CardTitle>Add New Snippet</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label
-                      htmlFor="title"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Title
-                    </label>
-                    <Input
-                      id="title"
-                      value={formData.title}
-                      onChange={(e) =>
-                        setFormData({ ...formData, title: e.target.value })
-                      }
-                      placeholder="Enter snippet title"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="snippet"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Code Snippet
-                    </label>
-                    <Textarea
-                      id="snippet"
-                      value={formData.snippet}
-                      onChange={(e) =>
-                        setFormData({ ...formData, snippet: e.target.value })
-                      }
-                      placeholder="Paste your code snippet here..."
-                      className="min-h-[120px] font-mono text-sm"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Tags
-                    </label>
-                    <div className="space-y-2">
-                      <div className="flex gap-2">
-                        <Input
-                          value={currentTag}
-                          onChange={(e) => setCurrentTag(e.target.value)}
-                          placeholder="Add a tag"
-                          onKeyPress={(e) =>
-                            e.key === "Enter" &&
-                            (e.preventDefault(), addTagChip())
-                          }
-                        />
-                        <Button type="button" onClick={addTagChip} size="sm">
-                          Add
-                        </Button>
-                      </div>
-                      {tagChips.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {tagChips.map((tag, index) => (
-                            <Badge
-                              key={index}
-                              variant="secondary"
-                              className="flex items-center gap-1"
-                            >
-                              {tag}
-                              <X
-                                className="w-3 h-3 cursor-pointer"
-                                onClick={() => removeTagChip(tag)}
-                              />
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-                      <Input
-                        value={formData.tags}
-                        onChange={(e) =>
-                          setFormData({ ...formData, tags: e.target.value })
-                        }
-                        placeholder="Or enter comma-separated tags"
-                        className="text-sm text-gray-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="source"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Source
-                    </label>
-                    <Select
-                      value={formData.source}
-                      onValueChange={(value) =>
-                        setFormData({ ...formData, source: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select source" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="dev.to">Dev.to</SelectItem>
-                        <SelectItem value="hashnode">Hashnode</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="custom">Custom Source</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {formData.source === "custom" && (
-                      <Input
-                        value={formData.customSource}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            customSource: e.target.value,
-                          })
-                        }
-                        placeholder="Enter custom source"
-                        className="mt-2"
-                      />
-                    )}
-                  </div>
-
-                  <Button type="submit" className="w-full">
-                    Submit Snippet
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </CollapsibleContent>
-        </Collapsible>
 
         {/* Search Interface */}
         <div ref={searchContainerRef} className="space-y-6">
@@ -423,6 +243,9 @@ export default function SnippetSearchApp() {
               </div>
             </div>
           </div>
+
+          {/* Filters */}
+          <div id="algolia-filters"></div>
 
           {/* Search Results */}
           <div id="algolia-hits"></div>
