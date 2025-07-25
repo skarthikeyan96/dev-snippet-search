@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
   experimental: {
-    optimizeCss: true,
+    optimizePackageImports: ["lucide-react"],
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -14,6 +14,30 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true,
+  },
+  // Optimize bundle size
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+  // Reduce bundle size by excluding unused features
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      // Optimize for production
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: "all",
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: "vendors",
+              chunks: "all",
+            },
+          },
+        },
+      };
+    }
+    return config;
   },
 };
 

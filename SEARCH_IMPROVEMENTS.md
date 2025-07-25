@@ -1,23 +1,30 @@
 # Search Improvements Documentation
 
-This document outlines all the improvements made to the snippet search functionality and data scraping system.
+## Overview
 
-## 1. Markdown Support for Tags
+This document tracks all improvements made to the dev-snippet-search application, including content rendering, data scraping, user experience enhancements, and build optimizations.
 
-### **Implementation:**
+## Content Rendering Improvements
 
-- Added custom markdown parser function `parseMarkdownInTag()` in `src/pages/search.tsx`
-- Supports bold (`**text**`, `__text__`), italic (`*text*`, `_text_`), inline code (`` `code` ``), links (`[text](url)`), and strikethrough (`~~text~~`)
+### Markdown Support for Tags
 
-### **Code Example:**
+**Problem**: Tags were displayed as plain text without proper formatting.
+
+**Solution**: Implemented a custom markdown parser for tags that supports:
+
+- **Bold text**: `**text**` or `__text__`
+- _Italic text_: `*text*` or `_text_`
+- `Inline code`: `` `code` ``
+- [Links](url): `[text](url)`
+- ~~Strikethrough~~: `~~text~~`
+
+**Code Example**:
 
 ```typescript
 const parseMarkdownInTag = (tag: string): string => {
   return tag
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/__(.*?)__/g, "<strong>$1</strong>")
     .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    .replace(/_(.*?)_/g, "<em>$1</em>")
     .replace(
       /`(.*?)`/g,
       '<code class="bg-gray-100 px-1 rounded text-xs">$1</code>'
@@ -30,48 +37,33 @@ const parseMarkdownInTag = (tag: string): string => {
 };
 ```
 
-### **Reason:**
+### HTML Entity Decoding
 
-Initially attempted to use `react-markdown` with `ReactDOM.render`, but this approach was incompatible with InstantSearch.js string templates and deprecated in React 18. The custom regex-based parser provides better performance and compatibility.
+**Problem**: Content contained HTML entities like `&lt;`, `&gt;`, `&amp;` that were not readable.
 
-## 2. Tailwind Typography Integration
+**Solution**: Integrated the `he` library to decode HTML entities in snippet content.
 
-### **Implementation:**
-
-- Added `@tailwindcss/typography` plugin to `tailwind.config.ts`
-- Applied `prose prose-sm max-w-none` classes to snippet content containers
-
-### **Benefits:**
-
-- Professional typography styling for markdown content
-- Consistent spacing, line heights, and text formatting
-- Better readability for code snippets and text content
-
-### **Code Example:**
-
-```typescript
-// tailwind.config.ts
-import typography from "@tailwindcss/typography";
-
-const config: Config = {
-  plugins: [tailwindcssAnimate, typography],
-};
-```
-
-## 3. HTML Content Processing
-
-### **Implementation:**
-
-- Integrated `he` library for HTML entity decoding
-- Added content cleaning pipeline to remove HTML tags and normalize whitespace
-- Specifically removes `<img>` tags and other HTML elements
-
-### **Code Example:**
+**Code Example**:
 
 ```typescript
 import { decode } from "he";
 
 const decodedSnippetText = decode(snippetText);
+```
+
+### Content Cleaning
+
+**Problem**: Scraped content contained HTML tags, images, and excessive whitespace.
+
+**Solution**: Implemented comprehensive content cleaning:
+
+- Remove all HTML tags including `<img>` tags
+- Normalize whitespace
+- Extract clean text for display
+
+**Code Example**:
+
+```typescript
 const cleanSnippetText = decodedSnippetText
   .replace(/<img[^>]*>/g, "") // Remove image tags
   .replace(/<[^>]*>/g, "") // Remove all other HTML tags
@@ -79,160 +71,174 @@ const cleanSnippetText = decodedSnippetText
   .trim();
 ```
 
-### **Reason:**
+### Tailwind Typography Integration
 
-Scraped content often contains HTML-encoded entities and raw HTML tags that break the display. This processing ensures clean, readable text output.
+**Problem**: Snippet text lacked proper typography styling.
 
-## 4. Content Structure Simplification
+**Solution**: Added `@tailwindcss/typography` plugin for better content rendering.
 
-### **Changes:**
+**Implementation**:
 
-- Removed redundant `previewText` variable and `preview` field from `SearchHit` interface
-- Consolidated to single `snippetText` field for cleaner data structure
-- Simplified template rendering logic
+```typescript
+// In snippet template
+<div class="bg-gray-50 rounded-lg p-4 mb-4 text-sm overflow-x-auto prose prose-sm max-w-none">
+  <div class="whitespace-pre-wrap">${cleanSnippetText}</div>
+</div>
+```
 
-### **Benefits:**
+## Enhanced Data Scraping System
 
-- Reduced data redundancy
-- Cleaner code structure
-- Better performance with less data processing
+### Multi-Source Scraping
 
-## 5. Enhanced Data Scraping System
+**Problem**: Limited to single source (Dev.to API).
 
-### **New Sources:**
+**Solution**: Implemented multi-source scraping system:
 
-- **Dev.to API**: Direct API integration for reliable content
-- **Hashnode RSS**: RSS feed parsing for Hashnode articles
-- **Alternative RSS Feeds**: CSS-Tricks, Smashing Magazine, Web Design Ledger, UX Movement, UX Planet
+- **Dev.to API**: Direct API integration
+- **Hashnode RSS**: RSS feed parsing
+- **Other RSS Feeds**: Generic RSS support
 
-### **Improvements:**
+**Features**:
 
-- **Rate Limiting**: Added delays between requests to respect API limits
-- **Error Handling**: Comprehensive try-catch blocks with logging
-- **Data Normalization**: Consistent tag formatting and content structure
-- **Fallback Mechanisms**: Multiple sources for better content diversity
+- Error handling and retry logic
+- Rate limiting to avoid API restrictions
+- Data normalization across sources
+- Duplicate detection and removal
 
-### **Code Example:**
+### Data Structure Simplification
 
-```javascript
-// Enhanced error handling and rate limiting
-for (const source of sources) {
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Rate limiting
-    const data = await fetchData(source);
-    // Process and normalize data
-  } catch (error) {
-    console.error(`Error fetching from ${source}:`, error);
-    // Continue with other sources
-  }
+**Problem**: Redundant fields (snippet text and preview text were identical).
+
+**Solution**: Simplified data structure:
+
+- Removed redundant `preview` field
+- Kept only `snippet` field for content
+- Normalized tag format (always array)
+
+**Before**:
+
+```typescript
+{
+  title: string;
+  snippet: string;
+  preview: string; // Redundant
+  tags: string[] | string; // Inconsistent
 }
 ```
 
-## 6. Toast Notifications System
+**After**:
 
-### **Implementation:**
+```typescript
+{
+  title: string;
+  snippet: string; // Clean, decoded content
+  tags: string[]; // Always array
+}
+```
 
-- Created custom toast hook (`src/hooks/use-toast.ts`) inspired by react-hot-toast
-- Built toast UI components using Radix UI primitives
-- Integrated toast feedback for bookmark actions
+## Toast Notifications System
 
-### **Features:**
+### Implementation
 
-- **Success notifications**: "Snippet saved! Snippet has been added to your saved collection."
-- **Removal notifications**: "Snippet removed. Snippet has been removed from your saved collection."
-- **Auto-dismiss**: Toasts automatically disappear after a set time
-- **Accessible**: Built with Radix UI for proper accessibility
+**Problem**: No user feedback for bookmark actions.
 
-### **Code Example:**
+**Solution**: Integrated Radix UI toast system with custom hook.
+
+**Components Added**:
+
+- `src/hooks/use-toast.ts` - Custom toast hook
+- `src/components/ui/toast.tsx` - Toast UI components
+- `src/components/ui/toaster.tsx` - Toast renderer
+
+**Usage**:
 
 ```typescript
 const { toast } = useToast();
 
-// When saving a snippet
 toast({
   title: "Snippet saved!",
   description: "Snippet has been added to your saved collection.",
 });
-
-// When removing a snippet
-toast({
-  title: "Snippet removed",
-  description: "Snippet has been removed from your saved collection.",
-});
 ```
 
-## 7. Saved Snippets Modal
+### Benefits
 
-### **Implementation:**
+- **Immediate Feedback**: Users know when actions succeed
+- **Accessible**: Built with Radix UI primitives
+- **Customizable**: Easy to style and configure
+- **Auto-dismiss**: Automatic cleanup after timeout
 
-- Added modal interface for viewing saved snippets
-- Clickable saved count in header opens modal
-- Full snippet management within modal
+## Saved Snippets Modal
 
-### **Features:**
+### Implementation
 
-- **Modal View**: Clean, responsive modal for saved snippets
-- **Real-time Count**: Shows current number of saved snippets
-- **Remove Functionality**: Direct removal from modal with toast feedback
-- **Full Content Display**: Shows complete snippet content with formatting
-- **External Links**: "Read more" buttons to original articles
+**Problem**: No way to view saved snippets after removing tab navigation.
 
-### **Code Example:**
+**Solution**: Created a modal interface for viewing saved snippets.
+
+**Features**:
+
+- Modal overlay with backdrop
+- Scrollable content area
+- Individual snippet removal
+- Reuses existing snippet rendering logic
+- Responsive design
+
+**Code Structure**:
 
 ```typescript
 const [showSavedModal, setShowSavedModal] = useState(false);
 
-// Clickable saved count
-<button
-  onClick={() => setShowSavedModal(true)}
-  className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 transition-colors"
->
-  <Bookmark className="w-4 h-4" />
-  <span>
-    {savedSnippets.length} snippet{savedSnippets.length !== 1 ? "s" : ""} saved
-  </span>
-</button>;
+// Modal JSX with saved snippets list
+{
+  showSavedModal && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      {/* Modal content */}
+    </div>
+  );
+}
 ```
 
-## 8. Bookmark Functionality
+## Bookmark Functionality
 
-### **Implementation:**
+### Enhanced Implementation
 
-- Bookmark buttons on each search result
-- Visual feedback (blue when saved, gray when not)
-- Tooltips for better UX
-- Seamless integration with Algolia search
+**Problem**: Basic bookmark toggle without persistence.
 
-### **Features:**
+**Solution**: Comprehensive bookmark system with:
 
-- **Visual States**: Filled bookmark icon when saved, outline when not
-- **Tooltips**: "Save snippet" / "Remove from saved" on hover
-- **Toast Feedback**: Immediate notification of actions
-- **State Persistence**: Maintains saved state across search interactions
+- Visual state indicators (filled/unfilled icons)
+- Toast notifications
+- Modal for viewing saved snippets
+- Individual removal from saved list
 
-## 9. localStorage Persistence
+**Features**:
 
-### **Implementation:**
+- **Visual Feedback**: Icons change state immediately
+- **Accessibility**: Proper ARIA labels and titles
+- **Error Handling**: Graceful fallbacks
+- **Performance**: Optimized re-renders
 
-- Added localStorage functionality to persist saved snippets across page refreshes
-- Automatic saving and loading of saved snippets
-- Error handling for localStorage operations
-- SSR-safe implementation with window checks
+## localStorage Persistence
 
-### **Features:**
+### Implementation
 
-- **Persistent Storage**: Saved snippets survive page refreshes and browser restarts
-- **Automatic Sync**: Changes are immediately saved to localStorage
-- **Error Handling**: Graceful fallback if localStorage is unavailable
-- **SSR Compatible**: Safe for server-side rendering with window checks
+**Problem**: Saved snippets lost on page refresh.
 
-### **Code Example:**
+**Solution**: Client-side persistence using localStorage.
+
+**Key Features**:
+
+- **SSR Safe**: Hydration-aware implementation
+- **Error Handling**: Graceful fallbacks if localStorage fails
+- **Auto-save**: Automatic persistence on state changes
+- **Cross-session**: Data persists across browser sessions
+
+**Code Example**:
 
 ```typescript
-// localStorage key for saved snippets
 const SAVED_SNIPPETS_KEY = "dev-snippet-search-saved-snippets";
 
-// Save to localStorage
 const saveSnippetsToStorage = (snippets: SearchHit[]) => {
   try {
     localStorage.setItem(SAVED_SNIPPETS_KEY, JSON.stringify(snippets));
@@ -241,7 +247,6 @@ const saveSnippetsToStorage = (snippets: SearchHit[]) => {
   }
 };
 
-// Load from localStorage
 const loadSnippetsFromStorage = (): SearchHit[] => {
   try {
     const saved = localStorage.getItem(SAVED_SNIPPETS_KEY);
@@ -268,13 +273,206 @@ useEffect(() => {
 }, [savedSnippets]);
 ```
 
-### **Benefits:**
+### Benefits:
 
 - **Data Persistence**: Users don't lose their saved snippets on page refresh
 - **Cross-Session Storage**: Snippets persist across browser sessions
 - **No Backend Required**: Pure client-side storage solution
 - **Fast Access**: Immediate loading of saved state
 - **Reliable**: Error handling ensures app doesn't break if localStorage fails
+
+## Build Size Optimizations
+
+### Unused Components Removal
+
+**Problem**: Large bundle size due to unused UI components.
+
+**Solution**: Removed 7 unused UI components:
+
+- `src/components/ui/badge.tsx`
+- `src/components/ui/input.tsx`
+- `src/components/ui/textarea.tsx`
+- `src/components/ui/select.tsx`
+- `src/components/ui/checkbox.tsx`
+- `src/components/ui/label.tsx`
+- `src/components/ui/collapsible.tsx`
+
+### Dependency Optimization
+
+**Problem**: Package.json contained many unused dependencies.
+
+**Solution**: Removed 20+ unused dependencies:
+
+**Removed Dependencies**:
+
+```json
+{
+  "@hookform/resolvers": "^3.9.1",
+  "@radix-ui/react-accordion": "latest",
+  "@radix-ui/react-alert-dialog": "latest",
+  "@radix-ui/react-aspect-ratio": "latest",
+  "@radix-ui/react-avatar": "latest",
+  "@radix-ui/react-checkbox": "latest",
+  "@radix-ui/react-collapsible": "^1.1.11",
+  "@radix-ui/react-context-menu": "latest",
+  "@radix-ui/react-dialog": "latest",
+  "@radix-ui/react-dropdown-menu": "latest",
+  "@radix-ui/react-hover-card": "latest",
+  "@radix-ui/react-label": "latest",
+  "@radix-ui/react-menubar": "latest",
+  "@radix-ui/react-navigation-menu": "latest",
+  "@radix-ui/react-popover": "latest",
+  "@radix-ui/react-progress": "latest",
+  "@radix-ui/react-radio-group": "latest",
+  "@radix-ui/react-scroll-area": "latest",
+  "@radix-ui/react-select": "^2.2.5",
+  "@radix-ui/react-separator": "latest",
+  "@radix-ui/react-slider": "latest",
+  "@radix-ui/react-switch": "latest",
+  "@radix-ui/react-tabs": "latest",
+  "@radix-ui/react-toggle": "latest",
+  "@radix-ui/react-toggle-group": "latest",
+  "@radix-ui/react-tooltip": "latest",
+  "cmdk": "latest",
+  "critters": "^0.0.25",
+  "date-fns": "4.1.0",
+  "dotenv": "^17.2.0",
+  "embla-carousel-react": "latest",
+  "geist": "^1.3.1",
+  "input-otp": "latest",
+  "marked": "^16.1.1",
+  "next-themes": "latest",
+  "react-day-picker": "latest",
+  "react-hook-form": "latest",
+  "react-markdown": "^10.1.0",
+  "react-resizable-panels": "latest",
+  "recharts": "latest",
+  "remark-gfm": "^4.0.1",
+  "sonner": "latest",
+  "vaul": "latest",
+  "zod": "^3.24.1"
+}
+```
+
+**Kept Dependencies** (Only what's actually used):
+
+```json
+{
+  "@radix-ui/react-slot": "^1.2.3",
+  "@radix-ui/react-toast": "^1.2.14",
+  "@tailwindcss/typography": "^0.5.16",
+  "algoliasearch": "^5.34.1",
+  "autoprefixer": "^10.4.20",
+  "axios": "^1.11.0",
+  "class-variance-authority": "^0.7.1",
+  "clsx": "^2.1.1",
+  "fast-xml-parser": "^5.2.5",
+  "he": "^1.2.0",
+  "instantsearch.js": "^4.79.2",
+  "lucide-react": "^0.454.0",
+  "next": "15.4.3",
+  "react": "19.1.0",
+  "react-dom": "19.1.0",
+  "tailwind-merge": "^2.6.0",
+  "tailwindcss-animate": "^1.0.7"
+}
+```
+
+### Icon Optimization
+
+**Problem**: Importing entire Lucide React library.
+
+**Solution**: Optimized icon imports to only include used icons.
+
+**Before**:
+
+```typescript
+import {
+  Search,
+  Code,
+  Bookmark,
+  Zap,
+  ArrowRight,
+  Github,
+  Star,
+  Users,
+  TrendingUp,
+} from "lucide-react";
+```
+
+**After**:
+
+```typescript
+import { Code, ArrowRight, Github, Star } from "lucide-react";
+```
+
+**Additional Optimization**: Replaced some Lucide icons with inline SVGs for even smaller bundle size.
+
+### Next.js Configuration Optimization
+
+**Problem**: Default Next.js configuration not optimized for production.
+
+**Solution**: Enhanced Next.js configuration:
+
+```typescript
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: "all",
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: "vendors",
+              chunks: "all",
+            },
+          },
+        },
+      };
+    }
+    return config;
+  },
+};
+```
+
+### Build Results
+
+**Before Optimization**:
+
+- Large bundle size due to unused components
+- 20+ unused dependencies
+- Unoptimized icon imports
+
+**After Optimization**:
+
+- **Removed 216 packages** from node_modules
+- **Clean build** with optimized chunks
+- **Vendor chunk optimization** for better caching
+- **Production console removal** for smaller bundles
+
+**Build Output**:
+
+```
+Route (pages)                              Size  First Load JS
+┌ ○ /                                   2.71 kB         220 kB
+├   /_app                                   0 B         217 kB
+├ ○ /404                                  179 B         217 kB
+├ ƒ /api/hello                              0 B         217 kB
+├ ƒ /api/search                             0 B         217 kB
+└ ○ /search                             5.12 kB         222 kB
++ First Load JS shared by all            224 kB
+  └ chunks/vendors-3492f114aa10d2a1.js   216 kB
+  └ other shared chunks (total)         8.84 kB
+```
 
 ## Dependencies Added
 
@@ -330,6 +528,8 @@ interface SearchHit {
 6. **Maintainability**: Cleaner code structure and better error handling
 7. **User Engagement**: Bookmark functionality and saved snippets management
 8. **Data Persistence**: localStorage ensures saved snippets survive page refreshes
+9. **Build Optimization**: Significantly reduced bundle size and improved performance
+10. **Dependency Management**: Clean, minimal dependencies with only necessary packages
 
 ## Future Considerations
 
@@ -342,6 +542,9 @@ interface SearchHit {
 7. **Offline Support**: Cache functionality for offline access
 8. **Sync**: Consider cloud sync for cross-device access
 9. **Backup**: Add backup/restore functionality for saved snippets
+10. **Further Bundle Optimization**: Consider code splitting and lazy loading
+11. **Image Optimization**: Implement proper image handling for better performance
+12. **Service Worker**: Add PWA capabilities for offline functionality
 
 ## Technical Notes
 
@@ -352,3 +555,5 @@ interface SearchHit {
 - **Accessibility**: WCAG compliant components and interactions
 - **Storage**: localStorage with fallback error handling
 - **SSR Safety**: Window checks for server-side rendering compatibility
+- **Bundle Optimization**: Tree shaking and code splitting for minimal bundle size
+- **Dependency Management**: Only essential dependencies for faster builds
