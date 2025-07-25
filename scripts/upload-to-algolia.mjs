@@ -12,8 +12,7 @@ const client = algoliasearch(
 
 // Fetch and index objects in Algolia
 const processRecords = async () => {
- 
-  const records = JSON.parse(fs.readFileSync('./devto-snippets.json', 'utf-8'));
+  const records = JSON.parse(fs.readFileSync('./scraped-snippets.json', 'utf-8'));
   console.log(records);
   // Set index settings
   await client.setSettings({
@@ -28,7 +27,7 @@ const processRecords = async () => {
     },
   });
   // Save objects to Algolia
-  await client.saveObjects({ indexName: process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME, objects: records });
+  await client.saveObjects({ indexName:  process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME, objects: records });
   console.log('✅ Successfully indexed objects and updated settings!');
 };
 
