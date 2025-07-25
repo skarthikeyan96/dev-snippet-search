@@ -13,6 +13,8 @@ import {
 import { decode } from "he";
 import { useToast } from "../hooks/use-toast";
 import { Toaster } from "../components/ui/toaster";
+import { getAnalytics } from "../lib/analytics";
+import AnalyticsDashboard from "../components/AnalyticsDashboard";
 
 interface SearchHit {
   objectID: string;
@@ -89,13 +91,20 @@ export default function SnippetSearchApp() {
   const [isHydrated, setIsHydrated] = useState(false);
 
   const { toast } = useToast();
+  const analytics = getAnalytics();
 
   // Load from localStorage after hydration to avoid SSR mismatch
   useEffect(() => {
     const saved = loadSnippetsFromStorage();
     setSavedSnippets(saved);
     setIsHydrated(true);
-  }, []);
+
+    // Track page view
+    analytics.trackEvent("page_view", {
+      page: "/search",
+      savedSnippetsCount: saved.length,
+    });
+  }, [analytics]);
 
   // Save to localStorage whenever savedSnippets changes (but only after hydration)
   useEffect(() => {
@@ -103,6 +112,14 @@ export default function SnippetSearchApp() {
       saveSnippetsToStorage(savedSnippets);
     }
   }, [savedSnippets, isHydrated]);
+
+  // Make analytics available globally for inline handlers
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      (window as unknown as { analytics: typeof analytics }).analytics =
+        analytics;
+    }
+  }, [analytics]);
 
   // Initialize Algolia search
   useEffect(() => {
@@ -222,7 +239,9 @@ export default function SnippetSearchApp() {
                     </div>
                     <a href="${
                       hit.url
-                    }" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 self-start sm:self-auto">
+                    }" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 self-start sm:self-auto" onclick="window.analytics && window.analytics.trackExternalLink('${
+              hit.url
+            }', '${hit.source}')">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                       </svg>
@@ -297,6 +316,9 @@ export default function SnippetSearchApp() {
               const svg = bookmarkBtn.querySelector("svg");
               if (svg) svg.classList.remove("fill-current");
 
+              // Track analytics
+              analytics.trackSnippetSave(objectId, "unsave");
+
               // Show toast
               toast({
                 title: "Snippet removed",
@@ -315,6 +337,9 @@ export default function SnippetSearchApp() {
               bookmarkBtn.setAttribute("title", "Remove from saved");
               const svg = bookmarkBtn.querySelector("svg");
               if (svg) svg.classList.add("fill-current");
+
+              // Track analytics
+              analytics.trackSnippetSave(objectId, "save");
 
               // Show toast
               toast({
@@ -340,6 +365,10 @@ export default function SnippetSearchApp() {
     setSavedSnippets((prev) =>
       prev.filter((saved) => saved.objectID !== snippet.objectID)
     );
+
+    // Track analytics
+    analytics.trackSnippetSave(snippet.objectID, "unsave");
+
     toast({
       title: "Snippet removed",
       description: "Snippet has been removed from your saved collection.",
@@ -360,7 +389,10 @@ export default function SnippetSearchApp() {
           {isHydrated && savedSnippets.length > 0 && (
             <div className="mt-4 flex items-center justify-center gap-2">
               <button
-                onClick={() => setShowSavedModal(true)}
+                onClick={() => {
+                  setShowSavedModal(true);
+                  analytics.trackModalInteraction("saved_snippets", "open");
+                }}
                 className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 transition-colors"
               >
                 <Bookmark className="w-4 h-4" />
@@ -411,7 +443,10 @@ export default function SnippetSearchApp() {
                   Saved Snippets ({savedSnippets.length})
                 </h2>
                 <button
-                  onClick={() => setShowSavedModal(false)}
+                  onClick={() => {
+                    setShowSavedModal(false);
+                    analytics.trackModalInteraction("saved_snippets", "close");
+                  }}
                   className="text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   <X className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -496,6 +531,12 @@ export default function SnippetSearchApp() {
                                 href={snippet.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                onClick={() =>
+                                  analytics.trackExternalLink(
+                                    snippet.url,
+                                    snippet.source
+                                  )
+                                }
                                 className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 self-start sm:self-auto"
                               >
                                 <ExternalLink className="w-4 h-4" />
@@ -515,6 +556,9 @@ export default function SnippetSearchApp() {
 
         {/* Toaster */}
         <Toaster />
+
+        {/* Analytics Dashboard */}
+        <AnalyticsDashboard />
       </div>
     </div>
   );
