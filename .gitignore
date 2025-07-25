@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated data files
+scraped-snippets.json
+src/devto-snippets.json
+*.json
+!package.json
+!package-lock.json
+!yarn.lock
+!tsconfig.json
+!tailwind.config.ts
+!components.json
+!eslint.config.mjs
+!postcss.config.mjs
+!next.config.ts
