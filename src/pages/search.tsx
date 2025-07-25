@@ -1,6 +1,6 @@
 import type React from "react";
-import { useEffect, useRef } from "react";
-import { Search, Zap } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Search, Zap, Bookmark, X, ExternalLink } from "lucide-react";
 import { algoliasearch } from "algoliasearch";
 import instantsearch, { InstantSearch } from "instantsearch.js";
 import {
@@ -11,6 +11,8 @@ import {
   refinementList,
 } from "instantsearch.js/es/widgets";
 import { decode } from "he";
+import { useToast } from "../hooks/use-toast";
+import { Toaster } from "../components/ui/toaster";
 
 interface SearchHit {
   objectID: string;
@@ -58,6 +60,12 @@ const parseMarkdownInTag = (tag: string): string => {
 export default function SnippetSearchApp() {
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
   const searchInstanceRef = useRef<InstantSearch | null>(null);
+
+  // State for saved snippets
+  const [savedSnippets, setSavedSnippets] = useState<SearchHit[]>([]);
+  const [showSavedModal, setShowSavedModal] = useState(false);
+
+  const { toast } = useToast();
 
   // Initialize Algolia search
   useEffect(() => {
@@ -127,9 +135,10 @@ export default function SnippetSearchApp() {
               .replace(/\s+/g, " ") // Normalize whitespace
               .trim();
 
-            console.log("Original:", snippetText);
-            console.log("Decoded:", decodedSnippetText);
-            console.log("Clean:", cleanSnippetText);
+            // Check if snippet is saved
+            const isSaved = savedSnippets.some(
+              (saved) => saved.objectID === hit.objectID
+            );
 
             return `
               <div class="hover:shadow-lg transition-shadow rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -140,8 +149,19 @@ export default function SnippetSearchApp() {
                       <span class="text-foreground inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
                         ${sourceText}
                       </span>
-                      <button class="text-gray-400 hover:text-gray-600 p-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <button 
+                        class="text-gray-400 hover:text-gray-600 p-1 bookmark-btn ${
+                          isSaved ? "text-blue-600 hover:text-blue-700" : ""
+                        }" 
+                        data-object-id="${hit.objectID}"
+                        data-saved="${isSaved}"
+                        title="${
+                          isSaved ? "Remove from saved" : "Save snippet"
+                        }"
+                      >
+                        <svg class="w-4 h-4 ${
+                          isSaved ? "fill-current" : ""
+                        }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
                         </svg>
                       </button>
@@ -208,10 +228,86 @@ export default function SnippetSearchApp() {
     search.start();
     searchInstanceRef.current = search;
 
+    // Add event listener for bookmark buttons
+    const handleBookmarkClick = (event: Event) => {
+      const target = event.target as HTMLElement;
+      const bookmarkBtn = target.closest(".bookmark-btn") as HTMLElement;
+
+      if (bookmarkBtn) {
+        const objectId = bookmarkBtn.getAttribute("data-object-id");
+        const isSaved = bookmarkBtn.getAttribute("data-saved") === "true";
+
+        if (objectId) {
+          // Find the snippet in search results
+          const snippet =
+            searchInstanceRef.current?.helper?.lastResults?.hits.find(
+              (hit: SearchHit) => hit.objectID === objectId
+            );
+
+          if (snippet) {
+            if (isSaved) {
+              // Remove from saved snippets
+              setSavedSnippets((prev) =>
+                prev.filter((saved) => saved.objectID !== objectId)
+              );
+              bookmarkBtn.setAttribute("data-saved", "false");
+              bookmarkBtn.classList.remove(
+                "text-blue-600",
+                "hover:text-blue-700"
+              );
+              bookmarkBtn.classList.add("text-gray-400", "hover:text-gray-600");
+              bookmarkBtn.setAttribute("title", "Save snippet");
+              const svg = bookmarkBtn.querySelector("svg");
+              if (svg) svg.classList.remove("fill-current");
+
+              // Show toast
+              toast({
+                title: "Snippet removed",
+                description:
+                  "Snippet has been removed from your saved collection.",
+              });
+            } else {
+              // Add to saved snippets
+              setSavedSnippets((prev) => [...prev, snippet]);
+              bookmarkBtn.setAttribute("data-saved", "true");
+              bookmarkBtn.classList.remove(
+                "text-gray-400",
+                "hover:text-gray-600"
+              );
+              bookmarkBtn.classList.add("text-blue-600", "hover:text-blue-700");
+              bookmarkBtn.setAttribute("title", "Remove from saved");
+              const svg = bookmarkBtn.querySelector("svg");
+              if (svg) svg.classList.add("fill-current");
+
+              // Show toast
+              toast({
+                title: "Snippet saved!",
+                description: "Snippet has been added to your saved collection.",
+              });
+            }
+          }
+        }
+      }
+    };
+
+    // Listen for clicks on bookmark buttons
+    document.addEventListener("click", handleBookmarkClick);
+
     return () => {
       search.dispose();
+      document.removeEventListener("click", handleBookmarkClick);
     };
-  }, []);
+  }, [savedSnippets, toast]);
+
+  const handleRemoveSavedSnippet = (snippet: SearchHit) => {
+    setSavedSnippets((prev) =>
+      prev.filter((saved) => saved.objectID !== snippet.objectID)
+    );
+    toast({
+      title: "Snippet removed",
+      description: "Snippet has been removed from your saved collection.",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -224,6 +320,20 @@ export default function SnippetSearchApp() {
           <p className="text-gray-600">
             Discover and manage code snippets from across the web
           </p>
+          {savedSnippets.length > 0 && (
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <button
+                onClick={() => setShowSavedModal(true)}
+                className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                <Bookmark className="w-4 h-4" />
+                <span>
+                  {savedSnippets.length} snippet
+                  {savedSnippets.length !== 1 ? "s" : ""} saved
+                </span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Search Interface */}
@@ -253,6 +363,121 @@ export default function SnippetSearchApp() {
           {/* Pagination */}
           <div id="algolia-pagination"></div>
         </div>
+
+        {/* Saved Snippets Modal */}
+        {showSavedModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-hidden">
+              <div className="flex items-center justify-between p-6 border-b">
+                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                  <Bookmark className="w-6 h-6" />
+                  Saved Snippets ({savedSnippets.length})
+                </h2>
+                <button
+                  onClick={() => setShowSavedModal(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="p-6 overflow-y-auto max-h-[calc(80vh-120px)]">
+                {savedSnippets.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Bookmark className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-xl font-medium text-gray-900 mb-2">
+                      No saved snippets
+                    </h3>
+                    <p className="text-gray-500">
+                      Start saving snippets to build your personal collection
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid gap-6">
+                    {savedSnippets.map((snippet) => {
+                      // Normalize tags: always array
+                      const tagArray = Array.isArray(snippet.tags)
+                        ? snippet.tags
+                        : typeof snippet.tags === "string"
+                        ? snippet.tags.split(",").map((tag) => tag.trim())
+                        : [];
+
+                      // Decode HTML entities and clean up the content
+                      const decodedSnippetText = decode(snippet.snippet);
+                      const cleanSnippetText = decodedSnippetText
+                        .replace(/<img[^>]*>/g, "")
+                        .replace(/<[^>]*>/g, "")
+                        .replace(/\s+/g, " ")
+                        .trim();
+
+                      return (
+                        <div
+                          key={snippet.objectID}
+                          className="hover:shadow-lg transition-shadow rounded-lg border bg-card text-card-foreground shadow-sm border-l-4 border-l-blue-500"
+                        >
+                          <div className="p-6">
+                            <div className="flex justify-between items-start mb-3">
+                              <h3 className="text-xl font-semibold text-gray-900">
+                                {snippet.title}
+                              </h3>
+                              <div className="flex items-center gap-2">
+                                <span className="text-foreground inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                                  {snippet.source}
+                                </span>
+                                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-blue-100 text-blue-800">
+                                  Saved
+                                </span>
+                                <button
+                                  className="text-blue-600 hover:text-blue-700 p-1"
+                                  onClick={() =>
+                                    handleRemoveSavedSnippet(snippet)
+                                  }
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="bg-gray-50 rounded-lg p-4 mb-4 text-sm overflow-x-auto prose prose-sm max-w-none">
+                              <div className="whitespace-pre-wrap">
+                                {cleanSnippetText}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                              <div className="flex flex-wrap gap-2">
+                                {tagArray.map((tag, index) => (
+                                  <span
+                                    key={index}
+                                    className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mr-2 mb-2"
+                                    dangerouslySetInnerHTML={{
+                                      __html: parseMarkdownInTag(tag),
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                              <a
+                                href={snippet.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3"
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                                Read more
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Toaster */}
+        <Toaster />
       </div>
     </div>
   );

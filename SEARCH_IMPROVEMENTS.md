@@ -1,128 +1,77 @@
-# Search Functionality Improvements
+# Search Improvements Documentation
 
-This document outlines the improvements made to the snippet search functionality, including the reasoning behind each change and the technical implementation details.
-
-## Overview
-
-The search functionality was enhanced to provide better content rendering, improved user experience, and more robust handling of various content formats from different sources. Additionally, the data scraping system was significantly improved to gather content from multiple sources with better reliability and data quality.
+This document outlines all the improvements made to the snippet search functionality and data scraping system.
 
 ## 1. Markdown Support for Tags
 
-### What was implemented:
+### **Implementation:**
 
-- Added markdown parsing for tags in search results
-- Created a custom markdown parser function `parseMarkdownInTag()`
-- Applied markdown rendering to tag badges
+- Added custom markdown parser function `parseMarkdownInTag()` in `src/pages/search.tsx`
+- Supports bold (`**text**`, `__text__`), italic (`*text*`, `_text_`), inline code (`` `code` ``), links (`[text](url)`), and strikethrough (`~~text~~`)
 
-### Technical Implementation:
+### **Code Example:**
 
 ```typescript
 const parseMarkdownInTag = (tag: string): string => {
-  return (
-    tag
-      // Bold text: **text** or __text__
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/__(.*?)__/g, "<strong>$1</strong>")
-      // Italic text: *text* or _text_
-      .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/_(.*?)_/g, "<em>$1</em>")
-      // Inline code: `code`
-      .replace(
-        /`(.*?)`/g,
-        '<code class="bg-gray-100 px-1 rounded text-xs">$1</code>'
-      )
-      // Links: [text](url)
-      .replace(
-        /\[([^\]]+)\]\(([^)]+)\)/g,
-        '<a href="$2" class="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>'
-      )
-      // Strikethrough: ~~text~~
-      .replace(/~~(.*?)~~/g, '<del class="line-through">$1</del>')
-  );
+  return tag
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/__(.*?)__/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(/_(.*?)_/g, "<em>$1</em>")
+    .replace(
+      /`(.*?)`/g,
+      '<code class="bg-gray-100 px-1 rounded text-xs">$1</code>'
+    )
+    .replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" class="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>'
+    )
+    .replace(/~~(.*?)~~/g, '<del class="line-through">$1</del>');
 };
 ```
 
-### Reasoning:
+### **Reason:**
 
-- **Better readability**: Tags with markdown formatting are more visually appealing and informative
-- **Consistent with content**: Many tags contain code snippets, links, or emphasis that should be properly rendered
-- **User experience**: Properly formatted tags help users quickly identify relevant content
-
-### Supported markdown features:
-
-- **Bold**: `**text**` or `__text__`
-- **Italic**: `*text*` or `_text_`
-- **Inline code**: `` `code` ``
-- **Links**: `[text](url)`
-- **Strikethrough**: `~~text~~`
+Initially attempted to use `react-markdown` with `ReactDOM.render`, but this approach was incompatible with InstantSearch.js string templates and deprecated in React 18. The custom regex-based parser provides better performance and compatibility.
 
 ## 2. Tailwind Typography Integration
 
-### What was implemented:
+### **Implementation:**
 
-- Installed `@tailwindcss/typography` plugin
-- Applied typography classes to snippet content
-- Configured Tailwind to use the typography plugin
+- Added `@tailwindcss/typography` plugin to `tailwind.config.ts`
+- Applied `prose prose-sm max-w-none` classes to snippet content containers
 
-### Technical Implementation:
+### **Benefits:**
 
-```bash
-npm install @tailwindcss/typography
-```
+- Professional typography styling for markdown content
+- Consistent spacing, line heights, and text formatting
+- Better readability for code snippets and text content
+
+### **Code Example:**
 
 ```typescript
 // tailwind.config.ts
 import typography from "@tailwindcss/typography";
 
 const config: Config = {
-  // ... other config
   plugins: [tailwindcssAnimate, typography],
 };
 ```
 
-```html
-<div
-  class="bg-gray-50 rounded-lg p-4 mb-4 text-sm overflow-x-auto prose prose-sm max-w-none"
->
-  <div class="whitespace-pre-wrap">${cleanSnippetText}</div>
-</div>
-```
-
-### Reasoning:
-
-- **Professional typography**: Provides consistent, well-designed typography for markdown content
-- **Comprehensive markdown support**: Handles all standard markdown syntax automatically
-- **Responsive design**: Automatically adapts to different screen sizes
-- **Maintainable**: Uses Tailwind's utility-first approach for easy customization
-
-### Benefits:
-
-- Automatic styling for headers, lists, blockquotes, tables, etc.
-- Consistent spacing and typography across all content
-- Better readability for code snippets and formatted text
-
 ## 3. HTML Content Processing
 
-### What was implemented:
+### **Implementation:**
 
-- Added HTML entity decoding using the `he` library
-- Implemented content cleaning to remove HTML tags
-- Added debug logging for content transformation
+- Integrated `he` library for HTML entity decoding
+- Added content cleaning pipeline to remove HTML tags and normalize whitespace
+- Specifically removes `<img>` tags and other HTML elements
 
-### Technical Implementation:
-
-```bash
-npm install he
-npm install --save-dev @types/he
-```
+### **Code Example:**
 
 ```typescript
 import { decode } from "he";
 
-// Decode HTML entities and clean up the content
 const decodedSnippetText = decode(snippetText);
-
-// Remove HTML tags and extract clean text for display
 const cleanSnippetText = decodedSnippetText
   .replace(/<img[^>]*>/g, "") // Remove image tags
   .replace(/<[^>]*>/g, "") // Remove all other HTML tags
@@ -130,325 +79,205 @@ const cleanSnippetText = decodedSnippetText
   .trim();
 ```
 
-### Reasoning:
+### **Reason:**
 
-- **Content source diversity**: Different sources provide content in various formats (HTML-encoded, with tags, etc.)
-- **Clean display**: Raw HTML content doesn't render well in search results
-- **Consistent experience**: All content should display uniformly regardless of source format
-
-### Problem solved:
-
-- **HTML entities**: `&lt;` → `<`, `&gt;` → `>`
-- **Image tags**: Removed broken image references
-- **HTML markup**: Cleaned up formatting tags
-- **Whitespace**: Normalized spacing for better readability
+Scraped content often contains HTML-encoded entities and raw HTML tags that break the display. This processing ensures clean, readable text output.
 
 ## 4. Content Structure Simplification
 
-### What was implemented:
+### **Changes:**
 
-- Removed redundant `previewText` field
-- Simplified the `SearchHit` interface
-- Cleaned up duplicate content processing
+- Removed redundant `previewText` variable and `preview` field from `SearchHit` interface
+- Consolidated to single `snippetText` field for cleaner data structure
+- Simplified template rendering logic
 
-### Technical Implementation:
+### **Benefits:**
 
-```typescript
-// Before
-interface SearchHit {
-  objectID: string;
-  _highlightResult: {
-    title?: { value: string };
-    snippet?: { value: string };
-    preview?: { value: string }; // Redundant
-  };
-  title: string;
-  snippet: string;
-  preview: string; // Redundant
-  tags: string[] | string;
-  source: string;
-  url: string;
-}
-
-// After
-interface SearchHit {
-  objectID: string;
-  _highlightResult: {
-    title?: { value: string };
-    snippet?: { value: string };
-  };
-  title: string;
-  snippet: string;
-  tags: string[] | string;
-  source: string;
-  url: string;
-}
-```
-
-### Reasoning:
-
-- **Eliminate redundancy**: Both `snippetText` and `previewText` contained identical content
-- **Simplify maintenance**: One source of truth for content processing
-- **Better performance**: Reduced redundant operations
-- **Cleaner code**: Less confusion and easier to understand
+- Reduced data redundancy
+- Cleaner code structure
+- Better performance with less data processing
 
 ## 5. Enhanced Data Scraping System
 
-### What was implemented:
+### **New Sources:**
 
-- **Multi-source scraping**: Added support for multiple content sources beyond Dev.to
-- **RSS feed integration**: Implemented RSS feed parsing for various tech blogs
-- **Improved error handling**: Better error handling and retry mechanisms
-- **Rate limiting protection**: Added delays between requests to avoid rate limiting
-- **Data normalization**: Consistent data structure across all sources
-- **Enhanced logging**: Detailed console output for monitoring scraping progress
+- **Dev.to API**: Direct API integration for reliable content
+- **Hashnode RSS**: RSS feed parsing for Hashnode articles
+- **Alternative RSS Feeds**: CSS-Tricks, Smashing Magazine, Web Design Ledger, UX Movement, UX Planet
 
-### Technical Implementation:
+### **Improvements:**
 
-#### Multi-Source Architecture:
+- **Rate Limiting**: Added delays between requests to respect API limits
+- **Error Handling**: Comprehensive try-catch blocks with logging
+- **Data Normalization**: Consistent tag formatting and content structure
+- **Fallback Mechanisms**: Multiple sources for better content diversity
 
-```javascript
-// Three main scraping functions
-const fetchDevToArticles = async () => {
-  /* Dev.to API */
-};
-const fetchHashnodeArticles = async () => {
-  /* Hashnode RSS */
-};
-const fetchAlternativeRSSArticles = async () => {
-  /* Multiple RSS feeds */
-};
-
-// Main orchestration
-const scrapeAllSources = async () => {
-  const [devToArticles, hashnodeArticles, alternativeArticles] =
-    await Promise.all([
-      fetchDevToArticles(),
-      fetchHashnodeArticles(),
-      fetchAlternativeRSSArticles(),
-    ]);
-  // Combine and process all articles
-};
-```
-
-#### RSS Feed Integration:
+### **Code Example:**
 
 ```javascript
-const alternativeFeeds = [
-  { url: "https://feeds.feedburner.com/css-tricks", source: "css-tricks" },
-  {
-    url: "https://feeds.feedburner.com/smashingmagazine",
-    source: "smashing-magazine",
-  },
-  {
-    url: "https://feeds.feedburner.com/webdesignledger",
-    source: "web-design-ledger",
-  },
-  { url: "https://feeds.feedburner.com/uxmovement", source: "ux-movement" },
-  { url: "https://feeds.feedburner.com/uxplanet", source: "ux-planet" },
-];
-```
-
-#### Rate Limiting Protection:
-
-```javascript
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Add delays between requests
-await delay(2000); // 2 seconds for Dev.to
-await delay(3000); // 3 seconds for Hashnode
-await delay(2000); // 2 seconds for RSS feeds
-```
-
-#### Enhanced Error Handling:
-
-```javascript
-try {
-  const res = await axios.get(feedUrl, {
-    headers: {
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36...",
-      Accept: "application/rss+xml, application/xml, text/xml, */*",
-      "Accept-Language": "en-US,en;q=0.9",
-      "Cache-Control": "no-cache",
-    },
-    timeout: 10000,
-  });
-} catch (err) {
-  console.error(`❌ Error fetching feed:`, err.message);
-  // Continue with other feeds even if one fails
+// Enhanced error handling and rate limiting
+for (const source of sources) {
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Rate limiting
+    const data = await fetchData(source);
+    // Process and normalize data
+  } catch (error) {
+    console.error(`Error fetching from ${source}:`, error);
+    // Continue with other sources
+  }
 }
 ```
 
-### Data Sources Added:
+## 6. Toast Notifications System
 
-#### 1. Dev.to API (Enhanced):
+### **Implementation:**
 
-- **Tags**: react, javascript, webdev, ai, programming, typescript, nodejs, nextjs
-- **Rate limiting**: 2-second delays between requests
-- **Enhanced metadata**: Added publishedAt, readingTime
+- Created custom toast hook (`src/hooks/use-toast.ts`) inspired by react-hot-toast
+- Built toast UI components using Radix UI primitives
+- Integrated toast feedback for bookmark actions
 
-#### 2. Hashnode RSS Feeds:
+### **Features:**
 
-- **Feeds**: react, javascript, web-development, artificial-intelligence, programming
-- **Fallback tags**: Auto-generate tags from title if not provided
-- **Enhanced headers**: Browser-like User-Agent to avoid blocking
+- **Success notifications**: "Snippet saved! Snippet has been added to your saved collection."
+- **Removal notifications**: "Snippet removed. Snippet has been removed from your saved collection."
+- **Auto-dismiss**: Toasts automatically disappear after a set time
+- **Accessible**: Built with Radix UI for proper accessibility
 
-#### 3. Alternative RSS Feeds:
+### **Code Example:**
 
-- **CSS-Tricks**: Web development and CSS articles
-- **Smashing Magazine**: Design and development content
-- **Web Design Ledger**: Web design and UX articles
-- **UX Movement**: User experience focused content
-- **UX Planet**: UX and design articles
+```typescript
+const { toast } = useToast();
 
-### Data Quality Improvements:
+// When saving a snippet
+toast({
+  title: "Snippet saved!",
+  description: "Snippet has been added to your saved collection.",
+});
 
-#### Tag Normalization:
-
-```javascript
-const normalized = uniqueArticles.map((record) => {
-  let tags = record.tags;
-
-  // If tags is a string like "react, javascript", convert to array
-  if (typeof tags === "string") {
-    tags = tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean); // Remove empty strings
-  }
-
-  return {
-    ...record,
-    tags: Array.isArray(tags) ? tags : [],
-  };
+// When removing a snippet
+toast({
+  title: "Snippet removed",
+  description: "Snippet has been removed from your saved collection.",
 });
 ```
 
-#### Unique Object IDs:
+## 7. Saved Snippets Modal
 
-```javascript
-// Dev.to
-objectID: `devto-${article.id}`;
+### **Implementation:**
 
-// Hashnode
-objectID: `hashnode-${item.guid || item.link}`;
+- Added modal interface for viewing saved snippets
+- Clickable saved count in header opens modal
+- Full snippet management within modal
 
-// RSS feeds
-objectID: `${feed.source}-${item.guid || item.link}`;
+### **Features:**
+
+- **Modal View**: Clean, responsive modal for saved snippets
+- **Real-time Count**: Shows current number of saved snippets
+- **Remove Functionality**: Direct removal from modal with toast feedback
+- **Full Content Display**: Shows complete snippet content with formatting
+- **External Links**: "Read more" buttons to original articles
+
+### **Code Example:**
+
+```typescript
+const [showSavedModal, setShowSavedModal] = useState(false);
+
+// Clickable saved count
+<button
+  onClick={() => setShowSavedModal(true)}
+  className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 transition-colors"
+>
+  <Bookmark className="w-4 h-4" />
+  <span>
+    {savedSnippets.length} snippet{savedSnippets.length !== 1 ? "s" : ""} saved
+  </span>
+</button>;
 ```
 
-#### Enhanced Metadata:
+## 8. Bookmark Functionality
 
-- **Published date**: Track when articles were published
-- **Reading time**: Estimated reading time for articles
-- **Author information**: Author attribution when available
-- **Source tracking**: Clear identification of content source
+### **Implementation:**
 
-### Reasoning:
+- Bookmark buttons on each search result
+- Visual feedback (blue when saved, gray when not)
+- Tooltips for better UX
+- Seamless integration with Algolia search
 
-- **Content diversity**: Multiple sources provide broader coverage of topics
-- **Reliability**: If one source fails, others continue to work
-- **Data quality**: Better metadata and consistent structure
-- **Scalability**: Easy to add new sources in the future
-- **Rate limiting**: Prevents being blocked by content providers
+### **Features:**
 
-### Benefits:
+- **Visual States**: Filled bookmark icon when saved, outline when not
+- **Tooltips**: "Save snippet" / "Remove from saved" on hover
+- **Toast Feedback**: Immediate notification of actions
+- **State Persistence**: Maintains saved state across search interactions
 
-- **More content**: Significantly increased article count
-- **Better variety**: Content from different perspectives and sources
-- **Improved reliability**: Robust error handling and fallbacks
-- **Better search results**: More diverse content for users to discover
+## Dependencies Added
 
-## 6. Dependencies Added
-
-### New packages:
+### **New Packages:**
 
 ```json
 {
   "@tailwindcss/typography": "^0.5.10",
   "he": "^1.2.0",
   "@types/he": "^1.2.3",
-  "fast-xml-parser": "^5.2.5"
+  "fast-xml-parser": "^4.3.2",
+  "@radix-ui/react-toast": "^1.1.5",
+  "class-variance-authority": "^0.7.0",
+  "clsx": "^2.0.0",
+  "tailwind-merge": "^2.0.0"
 }
 ```
 
-### Purpose:
+### **Removed Packages:**
 
-- **@tailwindcss/typography**: Professional typography for markdown content
-- **he**: HTML entity decoding
-- **@types/he**: TypeScript type definitions
-- **fast-xml-parser**: Efficient RSS feed parsing
-
-## 7. Search Result Structure
-
-### Final structure:
-
-```html
-<div class="search-result-card">
-  <div class="header">
-    <h3 class="title">${titleText}</h3>
-    <div class="source-badge">${sourceText}</div>
-  </div>
-
-  <div class="snippet-content">
-    <div class="prose-content">${cleanSnippetText}</div>
-  </div>
-
-  <div class="footer">
-    <div class="tags">${tagArray with markdown}</div>
-    <a class="read-more-link">Read more</a>
-  </div>
-</div>
+```json
+{
+  "react-markdown": "removed - incompatible with InstantSearch.js"
+}
 ```
 
-## 8. Benefits Summary
+## Search Result Structure
 
-### User Experience:
+### **Current Interface:**
 
-- **Better readability**: Properly formatted content with typography
-- **Visual appeal**: Markdown-rendered tags and clean content
-- **Consistent display**: Uniform appearance regardless of content source
-- **More content**: Significantly increased article count from multiple sources
-- **Better variety**: Content from different perspectives and sources
+```typescript
+interface SearchHit {
+  objectID: string;
+  _highlightResult: {
+    title?: { value: string };
+    snippet?: { value: string };
+  };
+  title: string;
+  snippet: string; // Cleaned and decoded content
+  tags: string[] | string;
+  source: string;
+  url: string;
+}
+```
 
-### Developer Experience:
+## Benefits Summary
 
-- **Maintainable code**: Simplified structure and clear separation of concerns
-- **Type safety**: Proper TypeScript interfaces
-- **Debug visibility**: Console logging for content transformation
-- **Robust scraping**: Reliable data collection with error handling
-- **Scalable architecture**: Easy to add new content sources
+1. **Better Content Quality**: HTML cleaning and entity decoding
+2. **Enhanced UX**: Toast notifications and modal interface
+3. **Improved Accessibility**: Radix UI components and proper ARIA labels
+4. **Content Diversity**: Multiple scraping sources
+5. **Performance**: Optimized rendering and data processing
+6. **Maintainability**: Cleaner code structure and better error handling
+7. **User Engagement**: Bookmark functionality and saved snippets management
 
-### Performance:
+## Future Considerations
 
-- **Reduced redundancy**: Eliminated duplicate content processing
-- **Efficient rendering**: Optimized HTML generation
-- **Clean dependencies**: Only necessary packages added
-- **Rate limiting**: Prevents being blocked by content providers
-- **Parallel processing**: Multiple sources scraped concurrently
+1. **Persistence**: Consider localStorage or backend storage for saved snippets
+2. **Search Filters**: Add filtering by saved status
+3. **Export Functionality**: Allow users to export saved snippets
+4. **Categories**: Add categorization for saved snippets
+5. **Sharing**: Enable sharing of snippet collections
+6. **Advanced Search**: Implement search within saved snippets
+7. **Offline Support**: Cache functionality for offline access
 
-## 9. Future Considerations
+## Technical Notes
 
-### Potential improvements:
-
-- **Content caching**: Cache processed content to avoid repeated transformations
-- **Lazy loading**: Load content progressively for better performance
-- **Advanced filtering**: Add more sophisticated content filtering options
-- **Custom typography**: Further customize typography styles for specific content types
-- **More RSS sources**: Add additional tech blogs and content sources
-- **Content scheduling**: Implement scheduled scraping for fresh content
-- **Content analytics**: Track popular articles and trending topics
-
-### Monitoring:
-
-- **Content quality**: Monitor the effectiveness of content cleaning
-- **Performance metrics**: Track rendering performance
-- **User feedback**: Gather feedback on content readability
-- **Scraping reliability**: Monitor success rates of different sources
-- **Content freshness**: Track how often content is updated
-- **Source performance**: Identify which sources provide the best content
-
-## Conclusion
-
-These improvements significantly enhance the search functionality by providing better content rendering, improved user experience, and more robust handling of diverse content formats. The changes maintain backward compatibility while adding modern typography and content processing capabilities.
+- **Import Paths**: Used relative paths instead of `@` alias for better compatibility
+- **TypeScript**: Proper typing throughout the application
+- **Error Boundaries**: Comprehensive error handling in scraping and UI
+- **Performance**: Optimized re-renders and efficient state management
+- **Accessibility**: WCAG compliant components and interactions
