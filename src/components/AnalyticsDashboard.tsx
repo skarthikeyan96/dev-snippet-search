@@ -29,6 +29,7 @@ interface AnalyticsSummary {
 export default function AnalyticsDashboard() {
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isDeveloperMode, setIsDeveloperMode] = useState(false);
 
   useEffect(() => {
     const updateAnalytics = () => {
@@ -42,6 +43,22 @@ export default function AnalyticsDashboard() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Check if user is in developer mode (localStorage flag or URL parameter)
+  useEffect(() => {
+    const checkDeveloperMode = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isDev =
+        urlParams.get("dev") === "true" ||
+        localStorage.getItem("snippet-search-dev-mode") === "true";
+      setIsDeveloperMode(isDev);
+    };
+
+    checkDeveloperMode();
+  }, []);
+
+  // Don't show anything if not in developer mode
+  if (!isDeveloperMode) return null;
 
   if (!analytics) return null;
 
@@ -60,11 +77,16 @@ export default function AnalyticsDashboard() {
 
   return (
     <>
+      {/* Developer Mode Indicator */}
+      <div className="fixed top-4 right-4 z-50 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+        DEV MODE
+      </div>
+
       {/* Toggle Button */}
       <button
         onClick={() => setIsVisible(!isVisible)}
         className="fixed bottom-4 right-4 z-50 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
-        title="Analytics Dashboard"
+        title="Developer Analytics Dashboard"
       >
         📊
       </button>
@@ -74,7 +96,14 @@ export default function AnalyticsDashboard() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
             <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-xl font-bold">Analytics Dashboard</h2>
+              <div>
+                <h2 className="text-xl font-bold">
+                  Developer Analytics Dashboard
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Session data for development purposes only
+                </p>
+              </div>
               <button
                 onClick={() => setIsVisible(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -84,6 +113,16 @@ export default function AnalyticsDashboard() {
             </div>
 
             <div className="p-4 overflow-y-auto max-h-[calc(90vh-80px)]">
+              {/* Privacy Notice */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                <p className="text-sm text-blue-800">
+                  <strong>Privacy Notice:</strong> This dashboard shows your
+                  session data for development purposes. No data is shared with
+                  third parties. You can disable developer mode by removing the
+                  URL parameter or clearing localStorage.
+                </p>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {/* Session Info */}
                 <div className="bg-gray-50 p-4 rounded-lg">
@@ -188,8 +227,8 @@ export default function AnalyticsDashboard() {
                 </div>
               )}
 
-              {/* Export Button */}
-              <div className="text-center">
+              {/* Action Buttons */}
+              <div className="flex gap-4 justify-center">
                 <button
                   onClick={() => {
                     const dataStr = JSON.stringify(analytics, null, 2);
@@ -205,7 +244,17 @@ export default function AnalyticsDashboard() {
                   }}
                   className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors"
                 >
-                  Export Analytics Data
+                  Export Data
+                </button>
+
+                <button
+                  onClick={() => {
+                    localStorage.removeItem("snippet-search-dev-mode");
+                    window.location.reload();
+                  }}
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
+                >
+                  Disable Dev Mode
                 </button>
               </div>
             </div>

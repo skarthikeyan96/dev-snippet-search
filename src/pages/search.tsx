@@ -15,6 +15,7 @@ import { useToast } from "../hooks/use-toast";
 import { Toaster } from "../components/ui/toaster";
 import { getAnalytics } from "../lib/analytics";
 import AnalyticsDashboard from "../components/AnalyticsDashboard";
+import UserAnalytics from "../components/UserAnalytics";
 
 interface SearchHit {
   objectID: string;
@@ -559,6 +560,9 @@ export default function SnippetSearchApp() {
 
         {/* Analytics Dashboard */}
         <AnalyticsDashboard />
+
+        {/* User Analytics */}
+        <UserAnalytics savedSnippetsCount={savedSnippets.length} />
       </div>
     </div>
   );
