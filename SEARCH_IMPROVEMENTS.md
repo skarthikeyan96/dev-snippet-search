@@ -210,6 +210,72 @@ const [showSavedModal, setShowSavedModal] = useState(false);
 - **Toast Feedback**: Immediate notification of actions
 - **State Persistence**: Maintains saved state across search interactions
 
+## 9. localStorage Persistence
+
+### **Implementation:**
+
+- Added localStorage functionality to persist saved snippets across page refreshes
+- Automatic saving and loading of saved snippets
+- Error handling for localStorage operations
+- SSR-safe implementation with window checks
+
+### **Features:**
+
+- **Persistent Storage**: Saved snippets survive page refreshes and browser restarts
+- **Automatic Sync**: Changes are immediately saved to localStorage
+- **Error Handling**: Graceful fallback if localStorage is unavailable
+- **SSR Compatible**: Safe for server-side rendering with window checks
+
+### **Code Example:**
+
+```typescript
+// localStorage key for saved snippets
+const SAVED_SNIPPETS_KEY = "dev-snippet-search-saved-snippets";
+
+// Save to localStorage
+const saveSnippetsToStorage = (snippets: SearchHit[]) => {
+  try {
+    localStorage.setItem(SAVED_SNIPPETS_KEY, JSON.stringify(snippets));
+  } catch (error) {
+    console.error("Error saving snippets to localStorage:", error);
+  }
+};
+
+// Load from localStorage
+const loadSnippetsFromStorage = (): SearchHit[] => {
+  try {
+    const saved = localStorage.getItem(SAVED_SNIPPETS_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (error) {
+    console.error("Error loading snippets from localStorage:", error);
+    return [];
+  }
+};
+
+// Initialize state from localStorage
+const [savedSnippets, setSavedSnippets] = useState<SearchHit[]>(() => {
+  if (typeof window !== "undefined") {
+    return loadSnippetsFromStorage();
+  }
+  return [];
+});
+
+// Auto-save when state changes
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    saveSnippetsToStorage(savedSnippets);
+  }
+}, [savedSnippets]);
+```
+
+### **Benefits:**
+
+- **Data Persistence**: Users don't lose their saved snippets on page refresh
+- **Cross-Session Storage**: Snippets persist across browser sessions
+- **No Backend Required**: Pure client-side storage solution
+- **Fast Access**: Immediate loading of saved state
+- **Reliable**: Error handling ensures app doesn't break if localStorage fails
+
 ## Dependencies Added
 
 ### **New Packages:**
@@ -263,16 +329,19 @@ interface SearchHit {
 5. **Performance**: Optimized rendering and data processing
 6. **Maintainability**: Cleaner code structure and better error handling
 7. **User Engagement**: Bookmark functionality and saved snippets management
+8. **Data Persistence**: localStorage ensures saved snippets survive page refreshes
 
 ## Future Considerations
 
-1. **Persistence**: Consider localStorage or backend storage for saved snippets
+1. **Enhanced Persistence**: Consider IndexedDB for larger storage capacity
 2. **Search Filters**: Add filtering by saved status
 3. **Export Functionality**: Allow users to export saved snippets
 4. **Categories**: Add categorization for saved snippets
 5. **Sharing**: Enable sharing of snippet collections
 6. **Advanced Search**: Implement search within saved snippets
 7. **Offline Support**: Cache functionality for offline access
+8. **Sync**: Consider cloud sync for cross-device access
+9. **Backup**: Add backup/restore functionality for saved snippets
 
 ## Technical Notes
 
@@ -281,3 +350,5 @@ interface SearchHit {
 - **Error Boundaries**: Comprehensive error handling in scraping and UI
 - **Performance**: Optimized re-renders and efficient state management
 - **Accessibility**: WCAG compliant components and interactions
+- **Storage**: localStorage with fallback error handling
+- **SSR Safety**: Window checks for server-side rendering compatibility

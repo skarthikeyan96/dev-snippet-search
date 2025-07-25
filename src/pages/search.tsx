@@ -32,6 +32,28 @@ const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!
 );
 
+// localStorage key for saved snippets
+const SAVED_SNIPPETS_KEY = "dev-snippet-search-saved-snippets";
+
+// localStorage utility functions
+const saveSnippetsToStorage = (snippets: SearchHit[]) => {
+  try {
+    localStorage.setItem(SAVED_SNIPPETS_KEY, JSON.stringify(snippets));
+  } catch (error) {
+    console.error("Error saving snippets to localStorage:", error);
+  }
+};
+
+const loadSnippetsFromStorage = (): SearchHit[] => {
+  try {
+    const saved = localStorage.getItem(SAVED_SNIPPETS_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch (error) {
+    console.error("Error loading snippets from localStorage:", error);
+    return [];
+  }
+};
+
 // Simple markdown parser for tags
 const parseMarkdownInTag = (tag: string): string => {
   return (
@@ -61,11 +83,26 @@ export default function SnippetSearchApp() {
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
   const searchInstanceRef = useRef<InstantSearch | null>(null);
 
-  // State for saved snippets
+  // State for saved snippets - start with empty array to avoid hydration mismatch
   const [savedSnippets, setSavedSnippets] = useState<SearchHit[]>([]);
   const [showSavedModal, setShowSavedModal] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const { toast } = useToast();
+
+  // Load from localStorage after hydration to avoid SSR mismatch
+  useEffect(() => {
+    const saved = loadSnippetsFromStorage();
+    setSavedSnippets(saved);
+    setIsHydrated(true);
+  }, []);
+
+  // Save to localStorage whenever savedSnippets changes (but only after hydration)
+  useEffect(() => {
+    if (isHydrated) {
+      saveSnippetsToStorage(savedSnippets);
+    }
+  }, [savedSnippets, isHydrated]);
 
   // Initialize Algolia search
   useEffect(() => {
@@ -135,10 +172,10 @@ export default function SnippetSearchApp() {
               .replace(/\s+/g, " ") // Normalize whitespace
               .trim();
 
-            // Check if snippet is saved
-            const isSaved = savedSnippets.some(
-              (saved) => saved.objectID === hit.objectID
-            );
+            // Check if snippet is saved (only after hydration)
+            const isSaved =
+              isHydrated &&
+              savedSnippets.some((saved) => saved.objectID === hit.objectID);
 
             return `
               <div class="hover:shadow-lg transition-shadow rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -297,7 +334,7 @@ export default function SnippetSearchApp() {
       search.dispose();
       document.removeEventListener("click", handleBookmarkClick);
     };
-  }, [savedSnippets, toast]);
+  }, [savedSnippets, toast, isHydrated]);
 
   const handleRemoveSavedSnippet = (snippet: SearchHit) => {
     setSavedSnippets((prev) =>
@@ -320,7 +357,7 @@ export default function SnippetSearchApp() {
           <p className="text-gray-600">
             Discover and manage code snippets from across the web
           </p>
-          {savedSnippets.length > 0 && (
+          {isHydrated && savedSnippets.length > 0 && (
             <div className="mt-4 flex items-center justify-center gap-2">
               <button
                 onClick={() => setShowSavedModal(true)}
